@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d [%t] %-5p %c - %m%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="R" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>jesque-web.log</File>
+		<encoder>
+			<pattern>%p %t %c - %m%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<maxIndex>1</maxIndex>
+			<FileNamePattern>jesque-web.log.%i</FileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>100KB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	<root level="info">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="R" />
+	</root>
+</configuration>
