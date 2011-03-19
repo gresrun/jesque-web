@@ -99,26 +99,20 @@ public class FailureDAORedisImpl implements FailureDAO
 	}
 
 	public Date requeue(final int index)
-	{
-		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Date>()
+	{ // FIXME: This is a pretty terrible way of ID'ing failures 
+	  // since new failures could have been inserted since the page 
+	  // was rendered throwing of the relative index...
+		final List<JobFailure> failures = getFailures(index, 1);
+		return (failures.isEmpty()) ? null : PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Date>()
 		{
 			public Date doWork(final Jedis jedis)
 			throws Exception
 			{
-				final List<JobFailure> failures = getFailures(index, 1);
-				final Date retriedAt;
-				if (!failures.isEmpty())
-				{
-					final JobFailure failure = failures.get(0);
-					retriedAt = new Date();
-					failure.setRetriedAt(retriedAt);
-					jedis.lset(key(FAILED), (int) index, ObjectMapperFactory.get().writeValueAsString(failure));
-					enqueue(jedis, failure.getQueue(), failure.getPayload());
-				}
-				else
-				{
-					retriedAt = null;
-				}
+				final Date retriedAt = new Date();
+				final JobFailure failure = failures.get(0);
+				failure.setRetriedAt(retriedAt);
+				jedis.lset(key(FAILED), (int) index, ObjectMapperFactory.get().writeValueAsString(failure));
+				enqueue(jedis, failure.getQueue(), failure.getPayload());
 				return retriedAt;
 			}
 		});
