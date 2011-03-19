@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>net.greghaines</groupId>
 			<artifactId>jesque</artifactId>
-			<version>0.9.3-SNAPSHOT</version>
+			<version>0.9.4-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
