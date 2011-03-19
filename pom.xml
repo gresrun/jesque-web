@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.greghaines</groupId>
 	<artifactId>jesque-web</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.5.0-SNAPSHOT</version>
 	<name>Jesque WebApp</name>
 	<description>An implementation of the Resque web application in Java</description>
 	<url>https://github.com/gresrun/jesque-web</url>
