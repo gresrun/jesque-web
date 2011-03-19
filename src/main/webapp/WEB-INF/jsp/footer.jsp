@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 		</div>
 		<div id="footer">
 			<p>Powered by <a href="http://github.com/gresrun/jesque">Jesque</a> v<c:out value="${version}" /> based on <a href="http://github.com/defunkt/resque">Resque</a></p>

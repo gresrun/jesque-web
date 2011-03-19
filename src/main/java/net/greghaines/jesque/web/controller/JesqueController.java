@@ -15,35 +15,48 @@
  */
 package net.greghaines.jesque.web.controller;
 
+import static net.greghaines.jesque.utils.ResqueConstants.COLON;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import net.greghaines.jesque.Config;
 import net.greghaines.jesque.utils.VersionUtils;
+import net.greghaines.jesque.web.KeyInfo;
+import net.greghaines.jesque.web.KeyType;
+import net.greghaines.jesque.web.QueueInfo;
 import net.greghaines.jesque.web.WorkerInfo;
 import net.greghaines.jesque.web.dao.FailureDAO;
 import net.greghaines.jesque.web.dao.KeysDAO;
 import net.greghaines.jesque.web.dao.QueueInfoDAO;
 import net.greghaines.jesque.web.dao.WorkerInfoDAO;
+import net.greghaines.jesque.web.utils.RedisDateFormatThreadLocal;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller("jesqueController")
 public class JesqueController
 {
 	private static final List<String> tabs = Arrays.asList("Overview", "Working", "Failed", "Queues", "Workers", "Stats");
 	private static final List<String> statsSubTabs = Arrays.asList("resque", "redis", "keys");
+	private static final int count = 20;
 	
 	@Resource
 	private Config config;
@@ -55,6 +68,49 @@ public class JesqueController
 	private QueueInfoDAO queueInfoDAO;
 	@Resource
 	private WorkerInfoDAO workerInfoDAO;
+	private String redisURI;
+	
+	@PostConstruct
+	public void buildRedisURI()
+	{
+		this.redisURI = "redis://" + this.config.getHost() + ":" + this.config.getPort() + "/" + this.config.getDatabase();
+	}
+	
+	@RequestMapping(value = "/failed", method = RequestMethod.GET)
+	public String failed(@RequestParam(value="start", defaultValue="0") final int offset, final ModelMap modelMap)
+	{
+		addHeaderAttributes(modelMap, "Failed", null, null);
+		modelMap.addAttribute("start", offset);
+		modelMap.addAttribute("count", count);
+		modelMap.addAttribute("fullFailCount", this.failureDAO.getCount());
+		modelMap.addAttribute("failures", this.failureDAO.getFailures(offset, count));
+		return "failed";
+	}
+	
+	@RequestMapping(value = "/failed/clear", method = RequestMethod.POST)
+	public String failedClear()
+	{
+		this.failureDAO.clear();
+		return "redirect:/failed";
+	}
+	
+	@RequestMapping(value = "/failed/requeue/{index}", method = RequestMethod.GET)
+	public String failedRequeue(@PathVariable("index") final int index)
+	{
+		this.failureDAO.requeue(index);
+		return "redirect:/failed";
+	}
+	
+	@RequestMapping(value = "/failed/requeue/{index}", method = RequestMethod.GET, headers = "X-Requested-With=XMLHttpRequest")
+	public void failedRequeueXHR(@PathVariable("index") final int index, final HttpServletResponse resp)
+	throws IOException
+	{
+		final Date retriedAt = this.failureDAO.requeue(index);
+		final PrintWriter pw = resp.getWriter();
+		pw.print((retriedAt == null) ? "ERROR" : RedisDateFormatThreadLocal.getInstance().get().format(retriedAt));
+		pw.flush();
+		pw.close();
+	}
 	
 	@RequestMapping(value = "/overview", method = RequestMethod.GET)
 	public String overview(final ModelMap modelMap)
@@ -83,6 +139,33 @@ public class JesqueController
 		return "queues";
 	}
 	
+	@RequestMapping(value = "/queues/{queueName}", method = RequestMethod.GET)
+	public String queues(@PathVariable("queueName") final String queueName, 
+			@RequestParam(value="start", defaultValue="0") final int offset, 
+			final ModelMap modelMap)
+	{
+		addHeaderAttributes(modelMap, "Queues", this.queueInfoDAO.getQueueNames(), queueName);
+		modelMap.addAttribute("start", offset);
+		modelMap.addAttribute("count", count);
+		final QueueInfo queueInfo = this.queueInfoDAO.getQueueInfo(queueName, offset, count);
+		if (queueInfo == null)
+		{
+			modelMap.addAttribute("queueName", queueName);
+		}
+		else
+		{
+			modelMap.addAttribute("queue", queueInfo);
+		}
+		return "queues-detail";
+	}
+	
+	@RequestMapping(value = "/queues/{queueName}/remove", method = RequestMethod.POST)
+	public String queues(@PathVariable("queueName") final String queueName)
+	{
+		this.queueInfoDAO.removeQueue(queueName);
+		return "redirect:/queues";
+	}
+	
 	@RequestMapping(value = "/stats", method = RequestMethod.GET)
 	public String stats(final ModelMap modelMap)
 	{
@@ -92,14 +175,60 @@ public class JesqueController
 	@RequestMapping(value = "/stats/{statType}", method = RequestMethod.GET)
 	public String stats(@PathVariable("statType") final String statType, final ModelMap modelMap)
 	{
+		if ("resque".equals(statType))
+		{
+			addHeaderAttributes(modelMap, "Stats", statsSubTabs, "resque");
+			modelMap.addAttribute("title", "Resque Client connected to " + this.redisURI);
+			modelMap.addAttribute("stats", createResqueStats());
+		}
+		else if ("redis".equals(statType))
+		{
+			addHeaderAttributes(modelMap, "Stats", statsSubTabs, "redis");
+			modelMap.addAttribute("title", this.redisURI);
+			modelMap.addAttribute("stats", this.keysDAO.getRedisInfo());
+		}
+		else if ("keys".equals(statType))
+		{
+			addHeaderAttributes(modelMap, "Stats", statsSubTabs, "keys");
+			modelMap.addAttribute("title", "Keys owned by Resque Client connected to " + this.redisURI);
+			modelMap.addAttribute("subTitle", "(All keys are actually prefixed with \"" + this.config.getNamespace() + COLON + "\")");
+			modelMap.addAttribute("keys", this.keysDAO.getKeyInfos());
+		}
 		return "stats";
 	}
 	
-	@RequestMapping(value = "/stats/key/{keyName}", method = RequestMethod.GET)
-	public String statsKey(@PathVariable("keyName") final String statType, final ModelMap modelMap)
+	private Map<String,Object> createResqueStats()
 	{
-		final String viewName = null;
-		return viewName;
+		final Map<String,Object> resqueStats = new LinkedHashMap<String,Object>();
+		resqueStats.put("environment", "development");
+		resqueStats.put("failed", this.failureDAO.getCount());
+		resqueStats.put("pending", this.queueInfoDAO.getPendingCount());
+		resqueStats.put("processed", this.queueInfoDAO.getProcessedCount());
+		resqueStats.put("queues", this.queueInfoDAO.getQueueNames().size());
+		resqueStats.put("servers", "[\"" + this.redisURI + "\"]");
+		resqueStats.put("workers", this.workerInfoDAO.getWorkerCount());
+		resqueStats.put("working", this.workerInfoDAO.getActiveWorkerCount());
+		return resqueStats;
+	}
+
+	@RequestMapping(value = "/stats/keys/{key}", method = RequestMethod.GET)
+	public String statsKey(@PathVariable("key") final String key, 
+			@RequestParam(value="start", defaultValue="0") final int offset, 
+			final ModelMap modelMap)
+	{
+		addHeaderAttributes(modelMap, "Stats", statsSubTabs, "keys");
+		modelMap.addAttribute("start", offset);
+		modelMap.addAttribute("count", count);
+		final KeyInfo keyInfo = this.keysDAO.getKeyInfo(this.config.getNamespace() + COLON + key, offset, count);
+		if (keyInfo == null)
+		{
+			modelMap.addAttribute("keyName", key);
+		}
+		else
+		{
+			modelMap.addAttribute("key", keyInfo);
+		}
+		return (keyInfo == null || KeyType.STRING.equals(keyInfo.getType())) ? "key-string" : "key-sets";
 	}
 	
 	@RequestMapping(value = "/workers", method = RequestMethod.GET)
@@ -234,16 +363,8 @@ public class JesqueController
 			modelMap.addAttribute("activeSubTab", activeSubTab);
 		}
 		modelMap.addAttribute("namespace", this.config.getNamespace());
-		modelMap.addAttribute("redisUri", buildRedisURI());
+		modelMap.addAttribute("redisUri", this.redisURI);
 		modelMap.addAttribute("version", VersionUtils.getVersion());
-	}
-
-	private String buildRedisURI()
-	{
-		final StringBuilder sb = new StringBuilder(64);
-		sb.append("redis://").append(this.config.getHost()).append(':').append(this.config.getPort())
-			.append('/').append(this.config.getDatabase());
-		return sb.toString();
 	}
 
 	private static void addPollController(final ModelMap modelMap, final String path, final boolean poll)

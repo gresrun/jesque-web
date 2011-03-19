@@ -15,6 +15,7 @@
  */
 package net.greghaines.jesque.web.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import net.greghaines.jesque.JobFailure;
@@ -27,5 +28,5 @@ public interface FailureDAO
 	
 	void clear();
 	
-	void requeue(int index);
+	Date requeue(int index);
 }

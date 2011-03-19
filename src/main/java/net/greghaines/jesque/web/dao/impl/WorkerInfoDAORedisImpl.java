@@ -79,6 +79,28 @@ public class WorkerInfoDAORedisImpl implements WorkerInfoDAO
 			}
 		});
 	}
+	
+	public long getActiveWorkerCount()
+	{
+		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Long>()
+		{
+			public Long doWork(final Jedis jedis)
+			throws Exception
+			{
+				long activeCount = 0L;
+				final Set<String> workerNames = jedis.smembers(key(WORKERS));
+				for (final String workerName : workerNames)
+				{
+					final String statusPayload = jedis.get(key(WORKER, workerName));
+					if (statusPayload != null)
+					{
+						activeCount++;
+					}
+				}
+				return activeCount;
+			}
+		});
+	}
 
 	public List<WorkerInfo> getActiveWorkers()
 	{

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,9 +9,6 @@
 		<title>Jesque.</title>
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/reset.css" />" />
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
-		<script type="text/javascript" src="<c:url value="/js/jquery-1.5.1.min.js" />"></script>
-		<script type="text/javascript" src="<c:url value="/js/jquery.relatize__date.js" />"></script>
-		<script type="text/javascript" src="<c:url value="/js/jesque.js" />"></script>
 	</head>
 	<body>
 		<div class="header">

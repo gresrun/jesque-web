@@ -15,13 +15,14 @@
  */
 package net.greghaines.jesque.web.dao.impl;
 
+import static net.greghaines.jesque.utils.ResqueConstants.PROCESSED;
 import static net.greghaines.jesque.utils.ResqueConstants.QUEUE;
 import static net.greghaines.jesque.utils.ResqueConstants.QUEUES;
+import static net.greghaines.jesque.utils.ResqueConstants.STAT;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import net.greghaines.jesque.Config;
 import net.greghaines.jesque.Job;
@@ -31,7 +32,6 @@ import net.greghaines.jesque.web.QueueInfo;
 import net.greghaines.jesque.web.dao.QueueInfoDAO;
 import net.greghaines.jesque.web.utils.PoolUtils;
 import net.greghaines.jesque.web.utils.PoolUtils.PoolWork;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.util.Pool;
 
@@ -54,21 +54,54 @@ public class QueueInfoDAORedisImpl implements QueueInfoDAO
 		this.jedisPool = jedisPool;
 	}
 
-	public Set<String> getQueueNames()
+	public List<String> getQueueNames()
 	{
-		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Set<String>>()
+		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,List<String>>()
 		{
-			public Set<String> doWork(final Jedis jedis)
+			public List<String> doWork(final Jedis jedis)
 			throws Exception
 			{
-				return jedis.smembers(key(QUEUES));
+				final List<String> queueNames = new ArrayList<String>(jedis.smembers(key(QUEUES)));
+				Collections.sort(queueNames);
+				return queueNames;
+			}
+		});
+	}
+	
+	public long getPendingCount()
+	{
+		final List<String> queueNames = getQueueNames();
+		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Long>()
+		{
+			public Long doWork(final Jedis jedis)
+			throws Exception
+			{
+				long pendingCount = 0L;
+				for (final String queueName : queueNames)
+				{
+					pendingCount += jedis.llen(key(QUEUE, queueName));
+				}
+				return pendingCount;
+			}
+		});
+	}
+	
+	public long getProcessedCount()
+	{
+		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Long>()
+		{
+			public Long doWork(final Jedis jedis)
+			throws Exception
+			{
+				final String processedStr = jedis.get(key(STAT, PROCESSED));
+				return (processedStr == null) ? 0L : Long.parseLong(processedStr);
 			}
 		});
 	}
 
 	public List<QueueInfo> getQueueInfos()
 	{
-		final Set<String> queueNames = getQueueNames();
+		final List<String> queueNames = getQueueNames();
 		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,List<QueueInfo>>()
 		{
 			public List<QueueInfo> doWork(final Jedis jedis)
@@ -97,6 +130,7 @@ public class QueueInfoDAORedisImpl implements QueueInfoDAO
 			{
 				final QueueInfo queueInfo = new QueueInfo();
 				queueInfo.setName(name);
+				queueInfo.setSize(jedis.llen(key(QUEUE, name)));
 				final List<String> payloads = jedis.lrange(key(QUEUE, name), jobOffset, jobOffset + jobCount - 1);
 				final List<Job> jobs = new ArrayList<Job>(payloads.size());
 				for (final String payload : payloads)
@@ -105,6 +139,20 @@ public class QueueInfoDAORedisImpl implements QueueInfoDAO
 				}
 				queueInfo.setJobs(jobs);
 				return queueInfo;
+			}
+		});
+	}
+	
+	public void removeQueue(final String name)
+	{
+		PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Void>()
+		{
+			public Void doWork(final Jedis jedis)
+			throws Exception
+			{
+				jedis.srem(key(QUEUES), name);
+				jedis.del(key(QUEUE, name));
+				return null;
 			}
 		});
 	}

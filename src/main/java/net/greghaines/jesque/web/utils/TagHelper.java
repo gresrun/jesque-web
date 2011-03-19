@@ -15,23 +15,49 @@
  */
 package net.greghaines.jesque.web.utils;
 
+import static net.greghaines.jesque.utils.JesqueUtils.createBacktrace;
+import static net.greghaines.jesque.utils.JesqueUtils.join;
+import static net.greghaines.jesque.utils.ResqueConstants.COLON;
+
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import net.greghaines.jesque.json.ObjectMapperFactory;
 
 public final class TagHelper
 {
-	public static String formatDate(final Date date, final String format)
+	private static Pattern colonPattern = Pattern.compile(COLON);
+	
+	public static String formatDate(final Date date)
 	{
-		return new SimpleDateFormat(format).format(date);
+		return RedisDateFormatThreadLocal.getInstance().get().format(date);
 	}
 	
 	public static String toJson(final Object obj)
 	throws IOException
 	{
 		return ObjectMapperFactory.get().writeValueAsString(obj);
+	}
+	
+	public static String asBacktrace(final Throwable t)
+	{
+		return join("\n", createBacktrace(t));
+	}
+	
+	public static String workerShortName(final String workerName)
+	{
+		final String shortName;
+		if (workerName == null)
+		{
+			shortName = null;
+		}
+		else
+		{
+			final String[] nameParts = colonPattern.split(workerName);
+			shortName = nameParts[0] + COLON + nameParts[1];
+		}
+		return shortName;
 	}
 
 	private TagHelper(){}

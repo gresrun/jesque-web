@@ -44,6 +44,7 @@
 	</bean>
 	
 	<bean id="keysDAO" class="net.greghaines.jesque.web.dao.impl.KeysDAORedisImpl">
+		<constructor-arg ref="config" />
 		<constructor-arg ref="jedisPool" />
 	</bean>
 	

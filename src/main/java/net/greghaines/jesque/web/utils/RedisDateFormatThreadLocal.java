@@ -19,6 +19,7 @@ import static net.greghaines.jesque.utils.ResqueConstants.DATE_FORMAT;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 public class RedisDateFormatThreadLocal extends ThreadLocal<DateFormat>
 {
@@ -44,6 +45,8 @@ public class RedisDateFormatThreadLocal extends ThreadLocal<DateFormat>
 	
 	protected DateFormat initialValue()
 	{
-		return new SimpleDateFormat(DATE_FORMAT);
+		final SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return sdf;
 	}
 }

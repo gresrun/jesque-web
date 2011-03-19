@@ -15,28 +15,45 @@
  */
 package net.greghaines.jesque.web.dao.impl;
 
+import static net.greghaines.jesque.utils.ResqueConstants.COLON;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.regex.Pattern;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.util.Pool;
-
+import net.greghaines.jesque.Config;
 import net.greghaines.jesque.web.KeyInfo;
 import net.greghaines.jesque.web.KeyType;
 import net.greghaines.jesque.web.dao.KeysDAO;
 import net.greghaines.jesque.web.utils.PoolUtils;
 import net.greghaines.jesque.web.utils.PoolUtils.PoolWork;
+import redis.clients.jedis.Jedis;
+import redis.clients.util.Pool;
 
 public class KeysDAORedisImpl implements KeysDAO
 {
+	private static final Pattern newLinePattern = Pattern.compile("\r\n");
+	private static final Pattern colonPattern = Pattern.compile(":");
+	
+	private final Config config;
 	private final Pool<Jedis> jedisPool;
 
-	public KeysDAORedisImpl(final Pool<Jedis> jedisPool)
+	public KeysDAORedisImpl(final Config config, final Pool<Jedis> jedisPool)
 	{
+		if (config == null)
+		{
+			throw new IllegalArgumentException("config must not be null");
+		}
 		if (jedisPool == null)
 		{
 			throw new IllegalArgumentException("jedisPool must not be null");
 		}
+		this.config = config;
 		this.jedisPool = jedisPool;
 	}
 	
@@ -48,6 +65,52 @@ public class KeysDAORedisImpl implements KeysDAO
 	public KeyInfo getKeyInfo(final String key, final int offset, final int count)
 	{
 		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new KeyDAOPoolWork(key, offset, count));
+	}
+
+	public List<KeyInfo> getKeyInfos()
+	{
+		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,List<KeyInfo>>()
+		{
+			public List<KeyInfo> doWork(final Jedis jedis)
+			throws Exception
+			{
+				final Set<String> keys = jedis.keys(KeysDAORedisImpl.this.config.getNamespace() + COLON + "*");
+				final List<KeyInfo> keyInfos = new ArrayList<KeyInfo>(keys.size());
+				for (final String key : keys)
+				{
+					keyInfos.add(new KeyDAOPoolWork(key).doWork(jedis));
+				}
+				Collections.sort(keyInfos);
+				return keyInfos;
+			}
+		});
+	}
+	
+	public Map<String,String> getRedisInfo()
+	{
+		return PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Map<String,String>>()
+		{
+			public Map<String,String> doWork(final Jedis jedis)
+			throws Exception
+			{
+				final Map<String,String> infoMap = new TreeMap<String,String>();
+				final String infoStr = jedis.info();
+				final String[] keyValueStrs = newLinePattern.split(infoStr);
+				for (final String keyValueStr : keyValueStrs)
+				{
+					final String[] keyAndValue = colonPattern.split(keyValueStr, 2);
+					if (keyAndValue.length == 1)
+					{
+						infoMap.put(keyAndValue[0], null);
+					}
+					else
+					{
+						infoMap.put(keyAndValue[0], keyAndValue[1]);
+					}
+				}
+				return new LinkedHashMap<String,String>(infoMap);
+			}	
+		});
 	}
 	
 	private static final class KeyDAOPoolWork implements PoolWork<Jedis,KeyInfo>

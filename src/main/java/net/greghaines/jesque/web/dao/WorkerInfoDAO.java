@@ -24,6 +24,8 @@ public interface WorkerInfoDAO
 {
 	long getWorkerCount();
 	
+	long getActiveWorkerCount();
+	
 	List<WorkerInfo> getActiveWorkers();
 	
 	List<WorkerInfo> getAllWorkers();

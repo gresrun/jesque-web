@@ -17,21 +17,26 @@ package net.greghaines.jesque.web;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class KeyInfo implements Comparable<KeyInfo>, Serializable
 {
 	private static final long serialVersionUID = 6243902746964006352L;
+	private static final Pattern colonPattern = Pattern.compile(":");
 	
 	private String name;
+	private String namespace;
 	private KeyType type;
 	private Long size;
 	private List<String> arrayValue;
 	
 	public KeyInfo(){}
 	
-	public KeyInfo(final String name, final KeyType type)
+	public KeyInfo(final String fullKey, final KeyType type)
 	{
-		this.name = name;
+		final String[] keyParts = colonPattern.split(fullKey, 2);
+		this.namespace = keyParts[0];
+		this.name = keyParts[1];
 		this.type = type;
 	}
 
@@ -43,6 +48,16 @@ public class KeyInfo implements Comparable<KeyInfo>, Serializable
 	public void setName(final String name)
 	{
 		this.name = name;
+	}
+
+	public String getNamespace()
+	{
+		return this.namespace;
+	}
+
+	public void setNamespace(final String namespace)
+	{
+		this.namespace = namespace;
 	}
 
 	public KeyType getType()

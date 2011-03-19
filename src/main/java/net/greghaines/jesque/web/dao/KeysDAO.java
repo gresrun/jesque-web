@@ -15,6 +15,9 @@
  */
 package net.greghaines.jesque.web.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import net.greghaines.jesque.web.KeyInfo;
 
 public interface KeysDAO
@@ -22,4 +25,8 @@ public interface KeysDAO
 	KeyInfo getKeyInfo(String key);
 	
 	KeyInfo getKeyInfo(String key, int offset, int count);
+	
+	List<KeyInfo> getKeyInfos();
+	
+	Map<String,String> getRedisInfo();
 }

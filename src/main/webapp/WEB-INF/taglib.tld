@@ -11,11 +11,26 @@
 	<function>
 		<name>formatDate</name>
 		<function-class>net.greghaines.jesque.web.utils.TagHelper</function-class>
-		<function-signature>java.lang.String formatDate(java.util.Date, java.lang.String)</function-signature>
+		<function-signature>java.lang.String formatDate(java.util.Date)</function-signature>
 	</function>
 	<function>
 		<name>toJson</name>
 		<function-class>net.greghaines.jesque.web.utils.TagHelper</function-class>
 		<function-signature>java.lang.String toJson(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>asBacktrace</name>
+		<function-class>net.greghaines.jesque.web.utils.TagHelper</function-class>
+		<function-signature>java.lang.String asBacktrace(java.lang.Throwable)</function-signature>
+	</function>
+	<function>
+		<name>workerShortName</name>
+		<function-class>net.greghaines.jesque.web.utils.TagHelper</function-class>
+		<function-signature>java.lang.String workerShortName(java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>min</name>
+		<function-class>java.lang.Math</function-class>
+		<function-signature>long min(long, long)</function-signature>
 	</function>
 </taglib>
