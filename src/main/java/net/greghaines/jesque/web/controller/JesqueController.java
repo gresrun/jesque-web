@@ -197,6 +197,27 @@ public class JesqueController
 		return "stats";
 	}
 	
+	@RequestMapping(value = "/stats.txt", method = RequestMethod.GET)
+	public void statsTxt(final HttpServletResponse resp)
+	throws IOException
+	{
+		final Map<String,Object> resqueStats = createResqueStats();
+		final List<QueueInfo> queueInfos = this.queueInfoDAO.getQueueInfos();
+		resp.setContentType("text/html");
+		final PrintWriter pw = resp.getWriter();
+		pw.println("resque.pending=" + resqueStats.get("pending"));
+		pw.println("resque.processed=" + resqueStats.get("processed"));
+		pw.println("resque.failed=" + resqueStats.get("failed"));
+		pw.println("resque.workers=" + resqueStats.get("workers"));
+		pw.println("resque.working=" + resqueStats.get("working"));
+		for (final QueueInfo queueInfo : queueInfos)
+		{
+			pw.printf("queues.%s=%d%n", queueInfo.getName(), queueInfo.getSize());
+		}
+		pw.flush();
+		pw.close();
+	}
+	
 	private Map<String,Object> createResqueStats()
 	{
 		final Map<String,Object> resqueStats = new LinkedHashMap<String,Object>();
