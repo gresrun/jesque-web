@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" 
-		xmlns:context="http://www.springframework.org/schema/context" 
-		xmlns:mvc="http://www.springframework.org/schema/mvc" 
-		xmlns:p="http://www.springframework.org/schema/p" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
 		http://www.springframework.org/schema/context 
 			http://www.springframework.org/schema/context/spring-context-3.0.xsd 
@@ -15,19 +14,67 @@
 		<context:include-filter expression="org.springframework.stereotype.Controller" type="annotation" />
 	</context:component-scan>
 	
-	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" p:useDefaultSuffixPattern="false" />
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="useDefaultSuffixPattern" value="false" />
+	</bean>
+	
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
 	
 	<mvc:view-controller path="/error" />
 	<mvc:view-controller path="/notFound" />
-	
-	<bean id="jstlViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/WEB-INF/jsp/" />
-		<property name="suffix" value=".jsp" />
+
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="favorPathExtension" value="false" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html" />
+				<entry key="poll" value="text/html" />
+				<entry key="json" value="application/json" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+					<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+					<property name="prefix" value="/WEB-INF/jsp/" />
+					<property name="suffix" value=".jsp" />
+				</bean>
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+					<property name="prefixJson" value="false" />
+					<property name="objectMapper">
+						<bean class="net.greghaines.jesque.json.ObjectMapperFactory" factory-method="get" />
+					</property>
+					<property name="renderedAttributes">
+						<set>
+							<value>count</value>
+							<value>failures</value>
+							<value>hostMap</value>
+							<value>key</value>
+							<value>keys</value>
+							<value>keyName</value>
+							<value>queue</value>
+							<value>queues</value>
+							<value>queueName</value>
+							<value>start</value>
+							<value>stats</value>
+							<value>totalFailureCount</value>
+							<value>totalWorkerCount</value>
+							<value>worker</value>
+							<value>workers</value>
+							<value>working</value>
+						</set>
+					</property>
+				</bean>
+			</list>
+		</property>
 	</bean>
 	
-	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" p:defaultErrorView="uncaughtException">
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="uncaughtException" />
 		<property name="exceptionMappings">
 			<props>
 				<prop key=".DataAccessException">error</prop>
@@ -37,5 +84,5 @@
 			</props>
 		</property>
 	</bean>
-	
+
 </beans>
