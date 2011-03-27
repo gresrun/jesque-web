@@ -78,6 +78,12 @@ public class JesqueController
 	}
 	
 	public String failed(@RequestParam(value="start", defaultValue="0") final int offset, final ModelMap modelMap)
+	@RequestMapping(value="/index", method=GET)
+	public String index()
+	{
+		return "redirect:/overview";
+	}
+	
 	@RequestMapping(value="/failed", method=GET)
 	{
 		addHeaderAttributes(modelMap, "Failed", null, null);
@@ -391,7 +397,6 @@ public class JesqueController
 
 	private static void addPollController(final ModelMap modelMap, final String path, final boolean poll)
 	{
-		modelMap.addAttribute("poll", poll);
 		final StringBuilder sb = new StringBuilder(64);
 		sb.append("<p class=\"poll\">");
 		if (poll)
@@ -404,6 +409,7 @@ public class JesqueController
 		}
 		sb.append("</p>");
 		modelMap.addAttribute("pollController", sb.toString());
+		modelMap.addAttribute("poll", poll);
 	}
 	
 	private static List<WorkerInfo> combineWorkerInfos(final Map<?,List<WorkerInfo>> hostMap)
