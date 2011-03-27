@@ -27,11 +27,12 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import net.greghaines.jesque.Config;
+import net.greghaines.jesque.utils.PoolUtils;
+import net.greghaines.jesque.utils.PoolUtils.PoolWork;
 import net.greghaines.jesque.web.KeyInfo;
 import net.greghaines.jesque.web.KeyType;
 import net.greghaines.jesque.web.dao.KeysDAO;
-import net.greghaines.jesque.web.utils.PoolUtils;
-import net.greghaines.jesque.web.utils.PoolUtils.PoolWork;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.util.Pool;
 

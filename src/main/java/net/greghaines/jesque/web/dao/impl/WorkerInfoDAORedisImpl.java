@@ -38,11 +38,12 @@ import net.greghaines.jesque.Config;
 import net.greghaines.jesque.WorkerStatus;
 import net.greghaines.jesque.json.ObjectMapperFactory;
 import net.greghaines.jesque.utils.JesqueUtils;
+import net.greghaines.jesque.utils.PoolUtils;
+import net.greghaines.jesque.utils.ResqueDateFormatThreadLocal;
+import net.greghaines.jesque.utils.PoolUtils.PoolWork;
 import net.greghaines.jesque.web.WorkerInfo;
 import net.greghaines.jesque.web.dao.WorkerInfoDAO;
-import net.greghaines.jesque.web.utils.PoolUtils;
-import net.greghaines.jesque.web.utils.PoolUtils.PoolWork;
-import net.greghaines.jesque.web.utils.RedisDateFormatThreadLocal;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.util.Pool;
 
@@ -211,7 +212,7 @@ public class WorkerInfoDAORedisImpl implements WorkerInfoDAO
 		final String startedStr = jedis.get(key(WORKER, workerName, STARTED));
 		if (startedStr != null)
 		{
-			final DateFormat df = RedisDateFormatThreadLocal.getInstance().get();
+			final DateFormat df = ResqueDateFormatThreadLocal.getInstance();
 			workerInfo.setStarted(df.parse(startedStr));
 		}
 		final String failedStr = jedis.get(key(STAT, FAILED, workerName));

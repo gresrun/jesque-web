@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import net.greghaines.jesque.Config;
+import net.greghaines.jesque.utils.ResqueDateFormatThreadLocal;
 import net.greghaines.jesque.utils.VersionUtils;
 import net.greghaines.jesque.web.KeyInfo;
 import net.greghaines.jesque.web.KeyType;
@@ -42,7 +43,6 @@ import net.greghaines.jesque.web.dao.FailureDAO;
 import net.greghaines.jesque.web.dao.KeysDAO;
 import net.greghaines.jesque.web.dao.QueueInfoDAO;
 import net.greghaines.jesque.web.dao.WorkerInfoDAO;
-import net.greghaines.jesque.web.utils.RedisDateFormatThreadLocal;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -107,7 +107,7 @@ public class JesqueController
 	{
 		final Date retriedAt = this.failureDAO.requeue(index);
 		final PrintWriter pw = resp.getWriter();
-		pw.print((retriedAt == null) ? "ERROR" : RedisDateFormatThreadLocal.getInstance().get().format(retriedAt));
+		pw.print((retriedAt == null) ? "ERROR" : ResqueDateFormatThreadLocal.getInstance().format(retriedAt));
 		pw.flush();
 		pw.close();
 	}

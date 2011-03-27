@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import net.greghaines.jesque.json.ObjectMapperFactory;
+import net.greghaines.jesque.utils.ResqueDateFormatThreadLocal;
 
 public final class TagHelper
 {
@@ -31,7 +32,7 @@ public final class TagHelper
 	
 	public static String formatDate(final Date date)
 	{
-		return RedisDateFormatThreadLocal.getInstance().get().format(date);
+		return ResqueDateFormatThreadLocal.getInstance().format(date);
 	}
 	
 	public static String toJson(final Object obj)
