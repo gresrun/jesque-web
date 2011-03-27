@@ -29,4 +29,6 @@ public interface FailureDAO
 	void clear();
 	
 	Date requeue(int index);
+	
+	void remove(int index);
 }

@@ -18,21 +18,26 @@
 			<dt>Worker</dt>
 			<dd>
 				<a href="<c:url value="/workers/${job.worker}" />"><c:out value="${jsq:workerShortName(job.worker)}" /></a> on <b class="queue-tag"><c:out value="${job.queue}" /></b> at <b><span class="time"><c:out value="${jsq:formatDate(job.failedAt)}" /></span></b>
-				<div class="retry">
 				<c:choose>
 				<c:when test="${not empty job.retriedAt}">
+				<div class="retried">
 					Retried <b><span class="time"><c:out value="${jsq:formatDate(job.retriedAt)}" /></span></b>
+					<a href="<c:url value="/failed/remove/${start + index}" />" class="remove" rel="remove">Remove</a>
+				</div>
 				</c:when>
 				<c:otherwise>
+				<div class="controls">
 					<a href="<c:url value="/failed/requeue/${start + index}" />" rel="retry">Retry</a>
+					or
+					<a href="<c:url value="/failed/remove/${start + index}" />" rel="remove">Remove</a>
+				</div>
 				</c:otherwise>
 				</c:choose>
-				</div>
 			</dd>
 			<dt>Class</dt>
 			<dd><code><c:out value="${(not empty job.payload) ? job.payload.className : 'null'}" /></code></dd>
 			<dt>Arguments</dt>
-			<dd><code><c:out value="${(not empty job.payload) ? jsq:toJson(job.payload.args) : 'null'}" /></code></dd>
+			<dd><pre><c:out value="${(not empty job.payload) ? jsq:showArgs(job.payload.args) : 'null'}" /></pre></dd>
 			<dt>Exception</dt>
 			<dd><code><c:out value="${job.exception.class.name}" /></code></dd>
 			<dt>Error</dt>

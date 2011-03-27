@@ -42,6 +42,11 @@ $(function() {
 		}, poll_interval * 1000);
 		return false;
 	});
+	$('ul.failed li').hover(function() {
+		$(this).addClass('hover');
+	}, function() {
+		$(this).removeClass('hover');
+	});
 	$('ul.failed a[rel=retry]').click(function() {
 		var href = $(this).attr('href');
 		$(this).text('Retrying...');

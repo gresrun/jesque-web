@@ -19,6 +19,11 @@
 		<function-signature>java.lang.String toJson(java.lang.Object)</function-signature>
 	</function>
 	<function>
+		<name>showArgs</name>
+		<function-class>net.greghaines.jesque.web.utils.TagHelper</function-class>
+		<function-signature>java.lang.String showArgs(java.lang.Object[])</function-signature>
+	</function>
+	<function>
 		<name>asBacktrace</name>
 		<function-class>net.greghaines.jesque.web.utils.TagHelper</function-class>
 		<function-signature>java.lang.String asBacktrace(java.lang.Throwable)</function-signature>

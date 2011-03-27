@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import net.greghaines.jesque.Config;
 import net.greghaines.jesque.Job;
@@ -99,9 +100,7 @@ public class FailureDAORedisImpl implements FailureDAO
 	}
 
 	public Date requeue(final int index)
-	{ // FIXME: This is a pretty terrible way of ID'ing failures 
-	  // since new failures could have been inserted since the page 
-	  // was rendered throwing of the relative index...
+	{
 		final List<JobFailure> failures = getFailures(index, 1);
 		return (failures.isEmpty()) ? null : PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Date>()
 		{
@@ -114,6 +113,22 @@ public class FailureDAORedisImpl implements FailureDAO
 				jedis.lset(key(FAILED), (int) index, ObjectMapperFactory.get().writeValueAsString(failure));
 				enqueue(jedis, failure.getQueue(), failure.getPayload());
 				return retriedAt;
+			}
+		});
+	}
+	
+	public void remove(final int index)
+	{
+		PoolUtils.doWorkInPoolNicely(this.jedisPool, new PoolWork<Jedis,Void>()
+		{
+			public Void doWork(final Jedis jedis)
+			throws Exception
+			{
+				final String failedKey = key(FAILED);
+				final String randId = Integer.toString(new Random().nextInt());
+				jedis.lset(failedKey, index, randId);
+				jedis.lrem(failedKey, 1, randId);
+				return null;
 			}
 		});
 	}

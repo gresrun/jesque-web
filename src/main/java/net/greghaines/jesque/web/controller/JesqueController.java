@@ -101,6 +101,13 @@ public class JesqueController
 		return "redirect:/failed";
 	}
 	
+	@RequestMapping(value="/failed/remove/{index}", method=GET)
+	public String failedRemove(@PathVariable("index") final int index)
+	{
+		this.failureDAO.remove(index);
+		return "redirect:/failed";
+	}
+	
 	@RequestMapping(value="/failed/requeue/{index}", method=GET)
 	public String failedRequeue(@PathVariable("index") final int index)
 	{
