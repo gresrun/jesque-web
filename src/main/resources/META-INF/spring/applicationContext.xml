@@ -30,7 +30,7 @@
 	
 	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
 		<constructor-arg>
-			<bean class="net.greghaines.jesque.web.utils.PoolUtils" factory-method="getDefaultPoolConfig" />
+			<bean class="net.greghaines.jesque.utils.PoolUtils" factory-method="getDefaultPoolConfig" />
 		</constructor-arg>
 		<constructor-arg value="${redis.host}" />
 		<constructor-arg value="${redis.port}" />
