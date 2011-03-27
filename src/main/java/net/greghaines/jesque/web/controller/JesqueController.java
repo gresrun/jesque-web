@@ -16,6 +16,8 @@
 package net.greghaines.jesque.web.controller;
 
 import static net.greghaines.jesque.utils.ResqueConstants.COLON;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,7 +50,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller("jesqueController")
@@ -76,8 +77,8 @@ public class JesqueController
 		this.redisURI = "redis://" + this.config.getHost() + ":" + this.config.getPort() + "/" + this.config.getDatabase();
 	}
 	
-	@RequestMapping(value = "/failed", method = RequestMethod.GET)
 	public String failed(@RequestParam(value="start", defaultValue="0") final int offset, final ModelMap modelMap)
+	@RequestMapping(value="/failed", method=GET)
 	{
 		addHeaderAttributes(modelMap, "Failed", null, null);
 		modelMap.addAttribute("start", offset);
@@ -87,21 +88,21 @@ public class JesqueController
 		return "failed";
 	}
 	
-	@RequestMapping(value = "/failed/clear", method = RequestMethod.POST)
+	@RequestMapping(value="/failed/clear", method=POST)
 	public String failedClear()
 	{
 		this.failureDAO.clear();
 		return "redirect:/failed";
 	}
 	
-	@RequestMapping(value = "/failed/requeue/{index}", method = RequestMethod.GET)
+	@RequestMapping(value="/failed/requeue/{index}", method=GET)
 	public String failedRequeue(@PathVariable("index") final int index)
 	{
 		this.failureDAO.requeue(index);
 		return "redirect:/failed";
 	}
 	
-	@RequestMapping(value = "/failed/requeue/{index}", method = RequestMethod.GET, headers = "X-Requested-With=XMLHttpRequest")
+	@RequestMapping(value="/failed/requeue/{index}", method=GET, headers="X-Requested-With=XMLHttpRequest")
 	public void failedRequeueXHR(@PathVariable("index") final int index, final HttpServletResponse resp)
 	throws IOException
 	{
@@ -112,7 +113,7 @@ public class JesqueController
 		pw.close();
 	}
 	
-	@RequestMapping(value = "/overview", method = RequestMethod.GET)
+	@RequestMapping(value="/overview", method=GET)
 	public String overview(final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Overview", null, null);
@@ -122,7 +123,7 @@ public class JesqueController
 		return "overview";
 	}
 	
-	@RequestMapping(value = "/overview.poll", method = RequestMethod.GET)
+	@RequestMapping(value="/overview.poll", method=GET)
 	public String overviewPoll(final ModelMap modelMap)
 	{
 		addQueuesAttributes(modelMap);
@@ -131,7 +132,7 @@ public class JesqueController
 		return "overview";
 	}
 	
-	@RequestMapping(value = "/queues", method = RequestMethod.GET)
+	@RequestMapping(value="/queues", method=GET)
 	public String queues(final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Queues", null, null);
@@ -139,7 +140,7 @@ public class JesqueController
 		return "queues";
 	}
 	
-	@RequestMapping(value = "/queues/{queueName}", method = RequestMethod.GET)
+	@RequestMapping(value="/queues/{queueName}", method=GET)
 	public String queues(@PathVariable("queueName") final String queueName, 
 			@RequestParam(value="start", defaultValue="0") final int offset, 
 			final ModelMap modelMap)
@@ -159,20 +160,20 @@ public class JesqueController
 		return "queues-detail";
 	}
 	
-	@RequestMapping(value = "/queues/{queueName}/remove", method = RequestMethod.POST)
+	@RequestMapping(value="/queues/{queueName}/remove", method=POST)
 	public String queues(@PathVariable("queueName") final String queueName)
 	{
 		this.queueInfoDAO.removeQueue(queueName);
 		return "redirect:/queues";
 	}
 	
-	@RequestMapping(value = "/stats", method = RequestMethod.GET)
+	@RequestMapping(value="/stats", method=GET)
 	public String stats(final ModelMap modelMap)
 	{
 		return "redirect:/stats/resque";
 	}
 	
-	@RequestMapping(value = "/stats/{statType}", method = RequestMethod.GET)
+	@RequestMapping(value="/stats/{statType}", method=GET)
 	public String stats(@PathVariable("statType") final String statType, final ModelMap modelMap)
 	{
 		if ("resque".equals(statType))
@@ -197,7 +198,7 @@ public class JesqueController
 		return "stats";
 	}
 	
-	@RequestMapping(value = "/stats.txt", method = RequestMethod.GET)
+	@RequestMapping(value="/stats.txt", method=GET)
 	public void statsTxt(final HttpServletResponse resp)
 	throws IOException
 	{
@@ -232,7 +233,7 @@ public class JesqueController
 		return resqueStats;
 	}
 
-	@RequestMapping(value = "/stats/keys/{key}", method = RequestMethod.GET)
+	@RequestMapping(value="/stats/keys/{key}", method=GET)
 	public String statsKey(@PathVariable("key") final String key, 
 			@RequestParam(value="start", defaultValue="0") final int offset, 
 			final ModelMap modelMap)
@@ -252,7 +253,7 @@ public class JesqueController
 		return (keyInfo == null || KeyType.STRING.equals(keyInfo.getType())) ? "key-string" : "key-sets";
 	}
 	
-	@RequestMapping(value = "/workers", method = RequestMethod.GET)
+	@RequestMapping(value="/workers", method=GET)
 	public String workers(final ModelMap modelMap)
 	{
 		final String viewName = addWorkersAttributes(modelMap, false);
@@ -260,14 +261,14 @@ public class JesqueController
 		return viewName;
 	}
 	
-	@RequestMapping(value = "/workers.poll", method = RequestMethod.GET)
+	@RequestMapping(value="/workers.poll", method=GET)
 	public String workersPoll(final ModelMap modelMap)
 	{
 		return addWorkersAttributes(modelMap, true);
 	}
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/workers/{workerName}", method = RequestMethod.GET)
+	@RequestMapping(value="/workers/{workerName}", method=GET)
 	public String workers(@PathVariable("workerName") final String workerName, final ModelMap modelMap)
 	{
 		final Object[] retVal = addWorkersAttributes(workerName, modelMap, false);
@@ -278,7 +279,7 @@ public class JesqueController
 		return viewName;
 	}
 	
-	@RequestMapping(value = "/workers/{workerName}.poll", method = RequestMethod.GET)
+	@RequestMapping(value="/workers/{workerName}.poll", method=GET)
 	public String workersPoll(@PathVariable("workerName") final String workerName, final ModelMap modelMap)
 	{
 		final Object[] retVal = addWorkersAttributes(workerName, modelMap, true);
@@ -286,7 +287,7 @@ public class JesqueController
 		return viewName;
 	}
 	
-	@RequestMapping(value = "/working", method = RequestMethod.GET)
+	@RequestMapping(value="/working", method=GET)
 	public String working(final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Working", null, null);
@@ -294,7 +295,7 @@ public class JesqueController
 		return "working";
 	}
 	
-	@RequestMapping(value = "/working/{workerName}", method = RequestMethod.GET)
+	@RequestMapping(value="/working/{workerName}", method=GET)
 	public String working(@PathVariable("workerName") final String workerName, final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Working", null, null);
