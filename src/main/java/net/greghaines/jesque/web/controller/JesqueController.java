@@ -57,7 +57,6 @@ public class JesqueController
 {
 	private static final List<String> tabs = Arrays.asList("Overview", "Working", "Failed", "Queues", "Workers", "Stats");
 	private static final List<String> statsSubTabs = Arrays.asList("resque", "redis", "keys");
-	private static final int count = 20;
 	
 	@Resource
 	private Config config;
@@ -77,7 +76,6 @@ public class JesqueController
 		this.redisURI = "redis://" + this.config.getHost() + ":" + this.config.getPort() + "/" + this.config.getDatabase();
 	}
 	
-	public String failed(@RequestParam(value="start", defaultValue="0") final int offset, final ModelMap modelMap)
 	@RequestMapping(value="/index", method=GET)
 	public String index()
 	{
@@ -85,11 +83,13 @@ public class JesqueController
 	}
 	
 	@RequestMapping(value="/failed", method=GET)
+	public String failed(@RequestParam(value="start", defaultValue="0") final int offset, 
+			@RequestParam(value="count", defaultValue="20") final int count, final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Failed", null, null);
 		modelMap.addAttribute("start", offset);
 		modelMap.addAttribute("count", count);
-		modelMap.addAttribute("fullFailCount", this.failureDAO.getCount());
+		modelMap.addAttribute("fullFailureCount", this.failureDAO.getCount());
 		modelMap.addAttribute("failures", this.failureDAO.getFailures(offset, count));
 		return "failed";
 	}
@@ -156,6 +156,7 @@ public class JesqueController
 	@RequestMapping(value="/queues/{queueName}", method=GET)
 	public String queues(@PathVariable("queueName") final String queueName, 
 			@RequestParam(value="start", defaultValue="0") final int offset, 
+			@RequestParam(value="count", defaultValue="20") final int count, 
 			final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Queues", this.queueInfoDAO.getQueueNames(), queueName);
@@ -249,6 +250,7 @@ public class JesqueController
 	@RequestMapping(value="/stats/keys/{key}", method=GET)
 	public String statsKey(@PathVariable("key") final String key, 
 			@RequestParam(value="start", defaultValue="0") final int offset, 
+			@RequestParam(value="count", defaultValue="20") final int count, 
 			final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Stats", statsSubTabs, "keys");
@@ -269,9 +271,8 @@ public class JesqueController
 	@RequestMapping(value="/workers", method=GET)
 	public String workers(final ModelMap modelMap)
 	{
-		final String viewName = addWorkersAttributes(modelMap, false);
 		addHeaderAttributes(modelMap, "Workers", null, null);
-		return viewName;
+		return addWorkersAttributes(modelMap, false);
 	}
 	
 	@RequestMapping(value="/workers.poll", method=GET)
@@ -296,8 +297,7 @@ public class JesqueController
 	public String workersPoll(@PathVariable("workerName") final String workerName, final ModelMap modelMap)
 	{
 		final Object[] retVal = addWorkersAttributes(workerName, modelMap, true);
-		final String viewName = (String) retVal[1];
-		return viewName;
+		return (String) retVal[1];
 	}
 	
 	@RequestMapping(value="/working", method=GET)
@@ -378,13 +378,13 @@ public class JesqueController
 	private void addWorkingAttributes(final ModelMap modelMap)
 	{
 		modelMap.addAttribute("totalWorkerCount", this.workerInfoDAO.getWorkerCount());
-		modelMap.addAttribute("workers", this.workerInfoDAO.getActiveWorkers());
+		modelMap.addAttribute("working", this.workerInfoDAO.getActiveWorkers());
 	}
 
 	private void addQueuesAttributes(final ModelMap modelMap)
 	{
 		modelMap.addAttribute("queues", this.queueInfoDAO.getQueueInfos());
-		modelMap.addAttribute("failureCount", this.failureDAO.getCount());
+		modelMap.addAttribute("totalFailureCount", this.failureDAO.getCount());
 	}
 
 	private void addHeaderAttributes(final ModelMap modelMap, final String activeTab, 

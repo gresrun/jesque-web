@@ -9,7 +9,7 @@
 	<input type="submit" name="" value="Clear Failed Jobs" />
 </form>
 </c:if>
-<p class="sub">Showing <c:out value="${start + 1}" /> to <c:out value="${jsq:min(start + count, fullFailCount)}" /> of <b><c:out value="${fullFailCount}" /></b> jobs</p>
+<p class="sub">Showing <c:out value="${start + 1}" /> to <c:out value="${jsq:min(start + count, fullFailureCount)}" /> of <b><c:out value="${fullFailureCount}" /></b> jobs</p>
 <ul class="failed">
 	<c:set var="index" value="0" />
 	<c:forEach items="${failures}" var="job">
@@ -54,7 +54,7 @@
 <jsp:include page="pagination.jsp">
 	<jsp:param name="start" value="${start}" />
 	<jsp:param name="count" value="${count}" />
-	<jsp:param name="size" value="${fullFailCount}" />
+	<jsp:param name="size" value="${fullFailureCount}" />
 	<jsp:param name="currentPage" value="${pageContext.request.contextPath}/failed" />
 </jsp:include>
 <c:if test="${not poll and empty param.partial}"><jsp:include page="footer.jsp" /></c:if>

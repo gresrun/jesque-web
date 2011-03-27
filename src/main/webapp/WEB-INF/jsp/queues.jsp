@@ -14,9 +14,9 @@
 		<td class="size"><c:out value="${queue.size}" /></td>
 	</tr>
 	</c:forEach>
-	<tr class="<c:out value="${(failureCount eq 0) ? 'failed' : 'failure'}" />">
+	<tr class="<c:out value="${(totalFailureCount eq 0) ? 'failed' : 'failure'}" />">
 		<td class="queue failed"><a class="queue" href="<c:url value="/failed" />">failed</a></td>
-		<td class="size"><c:out value="${failureCount}" /></td>
+		<td class="size"><c:out value="${totalFailureCount}" /></td>
 	</tr>
 </table>
 <c:if test="${not poll and empty param.partial}"><jsp:include page="footer.jsp" /></c:if>
