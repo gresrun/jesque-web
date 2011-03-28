@@ -74,15 +74,8 @@
 	</bean>
 	
 	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-		<property name="defaultErrorView" value="uncaughtException" />
-		<property name="exceptionMappings">
-			<props>
-				<prop key=".DataAccessException">error</prop>
-				<prop key=".NoSuchRequestHandlingMethodException">error</prop>
-				<prop key=".TypeMismatchException">error</prop>
-				<prop key=".MissingServletRequestParameterException">error</prop>
-			</props>
-		</property>
+		<property name="defaultErrorView" value="error" />
+		<property name="defaultStatusCode" value="500" />
 	</bean>
 
 </beans>

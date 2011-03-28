@@ -85,4 +85,4 @@ body { padding:0; margin:0; }
 #main .time a.toggle_format {text-decoration:none;}
 
 h1.error { font-size:110%; font-family:Arial, sans-serif; }
-pre.error { background: #FFCCCC; border: 0px solid #FFCCCC; padding: 10px; margin: 0px; }
+pre.error { background: #EEEEEE; border: 1px solid #ce1212; padding: 10px; margin: 0px; font-size: 14px; line-height: 145%; }
