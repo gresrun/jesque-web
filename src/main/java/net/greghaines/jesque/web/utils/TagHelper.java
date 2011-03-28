@@ -54,6 +54,10 @@ public final class TagHelper
 
 	public static String formatDate(final Date date)
 	{
+		if (date == null)
+		{
+			return null;
+		}
 		return ResqueDateFormatThreadLocal.getInstance().format(date);
 	}
 
@@ -68,7 +72,7 @@ public final class TagHelper
 	{
 		if (args == null)
 		{
-			return "null";
+			return null;
 		}
 		final List<String> jsonStrs = new ArrayList<String>(args.length);
 		for (final Object arg : args)
@@ -80,22 +84,21 @@ public final class TagHelper
 	
 	public static String asBacktrace(final Throwable t)
 	{
+		if (t == null)
+		{
+			return null;
+		}
 		return join("\n", createBacktrace(t));
 	}
 	
 	public static String workerShortName(final String workerName)
 	{
-		final String shortName;
 		if (workerName == null)
 		{
-			shortName = null;
+			return null;
 		}
-		else
-		{
-			final String[] nameParts = colonPattern.split(workerName);
-			shortName = nameParts[0] + COLON + nameParts[1];
-		}
-		return shortName;
+		final String[] nameParts = colonPattern.split(workerName);
+		return nameParts[0] + COLON + nameParts[1];
 	}
 
 	private TagHelper(){}
