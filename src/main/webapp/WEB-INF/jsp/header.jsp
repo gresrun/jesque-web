@@ -12,6 +12,7 @@
 		<title>Resque.</title>
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/reset.css" />" />
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
+		<script type="text/javascript" src="<c:url value="/js/date.js" />"></script>
 		<script type="text/javascript" src="<c:url value="/js/jquery-1.5.1.min.js" />"></script>
 		<script type="text/javascript" src="<c:url value="/js/jquery.relatize_date.js" />"></script>
 		<script type="text/javascript" src="<c:url value="/js/jesque.js" />"></script>
