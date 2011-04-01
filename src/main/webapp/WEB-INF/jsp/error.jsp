@@ -10,7 +10,13 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 		<title>Resque.</title>
+		<link rel="shortcut icon" href="<c:url value="/favicon.ico" />" />
+		<link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72-precomposed.png" />
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png" />
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/reset.css" />" />
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
 	</head>
