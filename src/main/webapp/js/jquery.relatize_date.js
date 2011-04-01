@@ -9,7 +9,7 @@
 		});
 	};
 	$.relatizeDate = function(element) {
-		return $.relatizeDate.timeAgoInWords(new Date($(element).text()));
+		return $.relatizeDate.timeAgoInWords(Date.parse($(element).text()));
 	};
 	$.extend($.relatizeDate, {
 		shortDays : [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
