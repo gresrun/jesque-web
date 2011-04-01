@@ -15,9 +15,9 @@
 	</c:if>
 	<c:if test="${not empty keys}">
 	<tr>
-		<th>key</th>
-		<th>type</th>
-		<th>size</th>
+		<th class="statHeader">Key</th>
+		<th class="statHeader">Type</th>
+		<th class="statHeader">Size</th>
     </tr>
     <c:forEach items="${keys}" var="key">
 	<tr>

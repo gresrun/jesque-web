@@ -2,18 +2,6 @@
 <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
 <urlrewrite default-match-type="wildcard">
 	<rule>
-		<from>/css/**</from>
-		<to last="true">/css/$1</to>
-	</rule>
-	<rule>
-		<from>/js/**</from>
-		<to last="true">/js/$1</to>
-	</rule>
-	<rule>
-		<from>/images/**</from>
-		<to last="true">/images/$1</to>
-	</rule>
-	<rule>
 		<from>/static/WEB-INF/**</from>
 		<set type="status">403</set>
 		<to last="true">/static/WEB-INF/$1</to>

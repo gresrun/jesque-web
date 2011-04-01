@@ -20,8 +20,14 @@
 	
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
 	
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver" />
+	
 	<mvc:view-controller path="/error" />
 	<mvc:view-controller path="/notFound" />
+	
+	<mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
 
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="favorPathExtension" value="false" />
@@ -51,14 +57,18 @@
 					<property name="renderedAttributes">
 						<set>
 							<value>count</value>
+							<value>errorCode</value>
 							<value>failures</value>
 							<value>hostMap</value>
 							<value>key</value>
 							<value>keys</value>
 							<value>keyName</value>
+							<value>errorMessage</value>
+							<value>errorType</value>
 							<value>queue</value>
 							<value>queues</value>
 							<value>queueName</value>
+							<value>stackTrace</value>
 							<value>start</value>
 							<value>stats</value>
 							<value>totalFailureCount</value>
@@ -71,11 +81,6 @@
 				</bean>
 			</list>
 		</property>
-	</bean>
-	
-	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-		<property name="defaultErrorView" value="error" />
-		<property name="defaultStatusCode" value="500" />
 	</bean>
 
 </beans>

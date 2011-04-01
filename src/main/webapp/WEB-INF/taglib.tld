@@ -34,6 +34,11 @@
 		<function-signature>java.lang.String workerShortName(java.lang.String)</function-signature>
 	</function>
 	<function>
+		<name>newLine</name>
+		<function-class>net.greghaines.jesque.web.utils.TagHelper</function-class>
+		<function-signature>java.lang.String newLine()</function-signature>
+	</function>
+	<function>
 		<name>min</name>
 		<function-class>java.lang.Math</function-class>
 		<function-signature>long min(long, long)</function-signature>

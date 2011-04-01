@@ -1,41 +1,21 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" trimDirectiveWhitespaces="true" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" trimDirectiveWhitespaces="true" isErrorPage="true" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="en">
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 	<head>
 		<meta charset="UTF-8" />
-		<title>Jesque.</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>Resque.</title>
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/reset.css" />" />
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
-		<style>
-			div.fourOhFourTable {
-				display: table;
-			}
-			div.fourOhFourRow {
-				display: table-row;
-			}
-			div.fourOhFourCell {
-				display: table-cell;
-				vertical-align: middle;
-				padding: 5px 5px 5px 25px;
-			}
-			span.big404 {
-				font-weight: bold;
-				font-size: 172px;
-				color: #CE1212;
-				text-shadow: #DDDDDD 2px 2px 3px;
-			}
-			span.fourOhFourText {
-				color: #000000;
-				font-size: 24px;
-				font-weight: bold;
-			}
-		</style>
 	</head>
 	<body>
 		<div class="header">
 			<ul class="nav">
-				<li class="current"><a href="#">Not Found</a></li>
+				<li class="current"><a href="#">404 - Not Found</a></li>
 			</ul>
 		</div>
 		<div id="main">

@@ -2,10 +2,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <!DOCTYPE html>
-<html lang="en">
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 	<head>
 		<meta charset="UTF-8" />
-		<title>Jesque.</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>Resque.</title>
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/reset.css" />" />
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css" />" />
 		<script type="text/javascript" src="<c:url value="/js/jquery-1.5.1.min.js" />"></script>

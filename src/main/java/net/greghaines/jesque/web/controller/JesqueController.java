@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -46,17 +47,24 @@ import net.greghaines.jesque.web.dao.KeysDAO;
 import net.greghaines.jesque.web.dao.QueueInfoDAO;
 import net.greghaines.jesque.web.dao.WorkerInfoDAO;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
+
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 @Controller("jesqueController")
 public class JesqueController
 {
 	private static final List<String> tabs = Arrays.asList("Overview", "Working", "Failed", "Queues", "Workers", "Stats");
 	private static final List<String> statsSubTabs = Arrays.asList("resque", "redis", "keys");
+	private static final Pattern whitespacePattern = Pattern.compile("\\s+");
 	
 	@Resource
 	private Config config;
@@ -74,6 +82,47 @@ public class JesqueController
 	public void buildRedisURI()
 	{
 		this.redisURI = "redis://" + this.config.getHost() + ":" + this.config.getPort() + "/" + this.config.getDatabase();
+	}
+	
+	@ExceptionHandler(value={JedisConnectionException.class})
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public ModelAndView connectError(final JedisConnectionException exception)
+	{
+		return errorModelAndView(exception, "error", HttpStatus.SERVICE_UNAVAILABLE);
+	}
+	
+	@ExceptionHandler(value={Exception.class})
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public ModelAndView genericError(final Exception exception)
+	{
+		return errorModelAndView(exception, "error", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	private static ModelAndView errorModelAndView(final Throwable t, final String viewName, final HttpStatus status)
+	{
+		final ModelAndView modelAndView = new ModelAndView(viewName);
+		modelAndView.addObject("errorCode", status.value());
+		modelAndView.addObject("errorName", toNiceCase(status.name()));
+		modelAndView.addObject("errorType", t.getClass().getName());
+		modelAndView.addObject("errorMessage", t.getMessage());
+		modelAndView.addObject("stackTrace", JesqueUtils.createBacktrace(t).toArray(new String[0]));
+		return modelAndView;
+	}
+	
+	private static String toNiceCase(final String orig)
+	{
+		final String[] tmpStrs = whitespacePattern.split(orig.replace('_', ' ').trim());
+		final StringBuilder sb = new StringBuilder(orig.length());
+		String prefix = "";
+		for (final String tmpStr : tmpStrs)
+		{
+			if (tmpStr.length() > 0)
+			{
+				sb.append(prefix).append(tmpStr.substring(0, 1).toUpperCase()).append(tmpStr.substring(1).toLowerCase());
+			}
+			prefix = " ";
+		}
+		return sb.toString();
 	}
 	
 	@RequestMapping(value="/index", method=GET)

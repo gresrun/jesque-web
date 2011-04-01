@@ -50,7 +50,8 @@ import net.greghaines.jesque.utils.ResqueDateFormatThreadLocal;
  */
 public final class TagHelper
 {
-	private static Pattern colonPattern = Pattern.compile(COLON);
+	private static final String NEW_LINE = "\n";
+	private static final Pattern colonPattern = Pattern.compile(COLON);
 
 	public static String formatDate(final Date date)
 	{
@@ -79,7 +80,7 @@ public final class TagHelper
 		{
 			jsonStrs.add(toJson(arg));
 		}
-		return join("\n", jsonStrs);
+		return join(NEW_LINE, jsonStrs);
 	}
 	
 	public static String asBacktrace(final Throwable t)
@@ -88,7 +89,7 @@ public final class TagHelper
 		{
 			return null;
 		}
-		return join("\n", createBacktrace(t));
+		return join(NEW_LINE, createBacktrace(t));
 	}
 	
 	public static String workerShortName(final String workerName)
@@ -99,6 +100,11 @@ public final class TagHelper
 		}
 		final String[] nameParts = colonPattern.split(workerName);
 		return nameParts[0] + COLON + nameParts[1];
+	}
+	
+	public static String newLine()
+	{
+		return NEW_LINE;
 	}
 
 	private TagHelper(){}
