@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.greghaines.jesque.web.dao;
+package net.greghaines.jesque.meta.dao;
 
 import java.util.List;
 import java.util.Map;
 
-import net.greghaines.jesque.web.WorkerInfo;
+import net.greghaines.jesque.meta.KeyInfo;
 
-public interface WorkerInfoDAO
-{
-	long getWorkerCount();
+public interface KeysDAO
+{	
+	KeyInfo getKeyInfo(String key);
 	
-	long getActiveWorkerCount();
+	KeyInfo getKeyInfo(String key, int offset, int count);
 	
-	List<WorkerInfo> getActiveWorkers();
+	List<KeyInfo> getKeyInfos();
 	
-	List<WorkerInfo> getAllWorkers();
-	
-	WorkerInfo getWorker(String workerName);
-	
-	Map<String,List<WorkerInfo>> getWorkerHostMap();
+	Map<String,String> getRedisInfo();
 }

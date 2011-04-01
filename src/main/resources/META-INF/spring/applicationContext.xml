@@ -38,22 +38,22 @@
 		<constructor-arg value="${redis.password}" />
 	</bean>
 	
-	<bean id="failureDAO" class="net.greghaines.jesque.web.dao.impl.FailureDAORedisImpl">
+	<bean id="failureDAO" class="net.greghaines.jesque.meta.dao.impl.FailureDAORedisImpl">
 		<constructor-arg ref="config" />
 		<constructor-arg ref="jedisPool" />
 	</bean>
 	
-	<bean id="keysDAO" class="net.greghaines.jesque.web.dao.impl.KeysDAORedisImpl">
+	<bean id="keysDAO" class="net.greghaines.jesque.meta.dao.impl.KeysDAORedisImpl">
 		<constructor-arg ref="config" />
 		<constructor-arg ref="jedisPool" />
 	</bean>
 	
-	<bean id="queueInfoDAO" class="net.greghaines.jesque.web.dao.impl.QueueInfoDAORedisImpl">
+	<bean id="queueInfoDAO" class="net.greghaines.jesque.meta.dao.impl.QueueInfoDAORedisImpl">
 		<constructor-arg ref="config" />
 		<constructor-arg ref="jedisPool" />
 	</bean>
 	
-	<bean id="workerInfoDAO" class="net.greghaines.jesque.web.dao.impl.WorkerInfoDAORedisImpl">
+	<bean id="workerInfoDAO" class="net.greghaines.jesque.meta.dao.impl.WorkerInfoDAORedisImpl">
 		<constructor-arg ref="config" />
 		<constructor-arg ref="jedisPool" />
 	</bean>

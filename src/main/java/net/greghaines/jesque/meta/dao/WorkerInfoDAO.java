@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.greghaines.jesque.web.dao;
+package net.greghaines.jesque.meta.dao;
 
 import java.util.List;
+import java.util.Map;
 
-import net.greghaines.jesque.web.QueueInfo;
+import net.greghaines.jesque.meta.WorkerInfo;
 
-public interface QueueInfoDAO
+public interface WorkerInfoDAO
 {
-	List<String> getQueueNames();
+	long getWorkerCount();
 	
-	long getPendingCount();
+	long getActiveWorkerCount();
 	
-	long getProcessedCount();
+	List<WorkerInfo> getActiveWorkers();
 	
-	List<QueueInfo> getQueueInfos();
+	List<WorkerInfo> getAllWorkers();
 	
-	QueueInfo getQueueInfo(String name, int jobOffset, int jobCount);
+	WorkerInfo getWorker(String workerName);
 	
-	void removeQueue(String name);
+	Map<String,List<WorkerInfo>> getWorkerHostMap();
 }

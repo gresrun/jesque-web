@@ -36,16 +36,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import net.greghaines.jesque.Config;
+import net.greghaines.jesque.meta.KeyInfo;
+import net.greghaines.jesque.meta.KeyType;
+import net.greghaines.jesque.meta.QueueInfo;
+import net.greghaines.jesque.meta.WorkerInfo;
+import net.greghaines.jesque.meta.dao.FailureDAO;
+import net.greghaines.jesque.meta.dao.KeysDAO;
+import net.greghaines.jesque.meta.dao.QueueInfoDAO;
+import net.greghaines.jesque.meta.dao.WorkerInfoDAO;
+import net.greghaines.jesque.utils.JesqueUtils;
 import net.greghaines.jesque.utils.ResqueDateFormatThreadLocal;
 import net.greghaines.jesque.utils.VersionUtils;
-import net.greghaines.jesque.web.KeyInfo;
-import net.greghaines.jesque.web.KeyType;
-import net.greghaines.jesque.web.QueueInfo;
-import net.greghaines.jesque.web.WorkerInfo;
-import net.greghaines.jesque.web.dao.FailureDAO;
-import net.greghaines.jesque.web.dao.KeysDAO;
-import net.greghaines.jesque.web.dao.QueueInfoDAO;
-import net.greghaines.jesque.web.dao.WorkerInfoDAO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;

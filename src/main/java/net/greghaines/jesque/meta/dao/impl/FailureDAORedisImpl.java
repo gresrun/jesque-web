@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.greghaines.jesque.web.dao.impl;
+package net.greghaines.jesque.meta.dao.impl;
 
 import static net.greghaines.jesque.utils.ResqueConstants.FAILED;
 import static net.greghaines.jesque.utils.ResqueConstants.QUEUE;
@@ -29,10 +29,10 @@ import net.greghaines.jesque.Config;
 import net.greghaines.jesque.Job;
 import net.greghaines.jesque.JobFailure;
 import net.greghaines.jesque.json.ObjectMapperFactory;
+import net.greghaines.jesque.meta.dao.FailureDAO;
 import net.greghaines.jesque.utils.JesqueUtils;
 import net.greghaines.jesque.utils.PoolUtils;
 import net.greghaines.jesque.utils.PoolUtils.PoolWork;
-import net.greghaines.jesque.web.dao.FailureDAO;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.util.Pool;

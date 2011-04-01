@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.greghaines.jesque.web.dao;
+package net.greghaines.jesque.meta.dao;
 
 import java.util.List;
-import java.util.Map;
 
-import net.greghaines.jesque.web.KeyInfo;
+import net.greghaines.jesque.meta.QueueInfo;
 
-public interface KeysDAO
-{	
-	KeyInfo getKeyInfo(String key);
+public interface QueueInfoDAO
+{
+	List<String> getQueueNames();
 	
-	KeyInfo getKeyInfo(String key, int offset, int count);
+	long getPendingCount();
 	
-	List<KeyInfo> getKeyInfos();
+	long getProcessedCount();
 	
-	Map<String,String> getRedisInfo();
+	List<QueueInfo> getQueueInfos();
+	
+	QueueInfo getQueueInfo(String name, int jobOffset, int jobCount);
+	
+	void removeQueue(String name);
 }

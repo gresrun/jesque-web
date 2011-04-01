@@ -13,33 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.greghaines.jesque.web;
+package net.greghaines.jesque.meta;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.regex.Pattern;
 
-public class KeyInfo implements Comparable<KeyInfo>, Serializable
+import net.greghaines.jesque.Job;
+
+public class QueueInfo implements Comparable<QueueInfo>, Serializable
 {
-	private static final long serialVersionUID = 6243902746964006352L;
-	private static final Pattern colonPattern = Pattern.compile(":");
+	private static final long serialVersionUID = 562750483276247591L;
 	
 	private String name;
-	private String namespace;
-	private KeyType type;
 	private Long size;
-	private List<String> arrayValue;
+	private List<Job> jobs;
 	
-	public KeyInfo(){}
+	public QueueInfo(){}
 	
-	public KeyInfo(final String fullKey, final KeyType type)
-	{
-		final String[] keyParts = colonPattern.split(fullKey, 2);
-		this.namespace = keyParts[0];
-		this.name = keyParts[1];
-		this.type = type;
-	}
-
 	public String getName()
 	{
 		return this.name;
@@ -48,26 +38,6 @@ public class KeyInfo implements Comparable<KeyInfo>, Serializable
 	public void setName(final String name)
 	{
 		this.name = name;
-	}
-
-	public String getNamespace()
-	{
-		return this.namespace;
-	}
-
-	public void setNamespace(final String namespace)
-	{
-		this.namespace = namespace;
-	}
-
-	public KeyType getType()
-	{
-		return this.type;
-	}
-
-	public void setType(final KeyType type)
-	{
-		this.type = type;
 	}
 
 	public Long getSize()
@@ -80,23 +50,23 @@ public class KeyInfo implements Comparable<KeyInfo>, Serializable
 		this.size = size;
 	}
 
-	public List<String> getArrayValue()
+	public List<Job> getJobs()
 	{
-		return this.arrayValue;
+		return this.jobs;
 	}
 
-	public void setArrayValue(final List<String> arrayValue)
+	public void setJobs(final List<Job> jobs)
 	{
-		this.arrayValue = arrayValue;
+		this.jobs = jobs;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return this.name;
 	}
 
-	public int compareTo(final KeyInfo other)
+	public int compareTo(final QueueInfo other)
 	{
 		int retVal = 1;
 		if (other != null)

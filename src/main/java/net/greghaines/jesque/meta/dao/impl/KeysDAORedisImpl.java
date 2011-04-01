@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.greghaines.jesque.web.dao.impl;
+package net.greghaines.jesque.meta.dao.impl;
 
 import static net.greghaines.jesque.utils.ResqueConstants.COLON;
 
@@ -27,11 +27,11 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import net.greghaines.jesque.Config;
+import net.greghaines.jesque.meta.KeyInfo;
+import net.greghaines.jesque.meta.KeyType;
+import net.greghaines.jesque.meta.dao.KeysDAO;
 import net.greghaines.jesque.utils.PoolUtils;
 import net.greghaines.jesque.utils.PoolUtils.PoolWork;
-import net.greghaines.jesque.web.KeyInfo;
-import net.greghaines.jesque.web.KeyType;
-import net.greghaines.jesque.web.dao.KeysDAO;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.util.Pool;
