@@ -35,7 +35,7 @@
 		<c:if test="${not empty subTabs}">
 		<ul class="subnav">
 		<c:forEach items="${subTabs}" var="subTab">
-			<li<c:if test="${subTab eq activeSubTab}"> class="current"</c:if>><a href="<c:url value="/${fn:toLowerCase(activeTab)}/${fn:toLowerCase(subTab)}" />"><span><c:out value="${subTab}" /></span></a></li>
+			<li<c:if test="${subTab eq activeSubTab}"> class="current"</c:if>><a href="<c:url value="/${fn:toLowerCase(activeTab)}/${subTab}" />"><span><c:out value="${subTab}" /></span></a></li>
 		</c:forEach>
 		</ul>
 		</c:if>
