@@ -82,7 +82,7 @@ public class JesqueController
 	@PostConstruct
 	public void buildRedisURI()
 	{
-		this.redisURI = "redis://" + this.config.getHost() + ":" + this.config.getPort() + "/" + this.config.getDatabase();
+		this.redisURI = this.config.getURI();
 	}
 	
 	@ExceptionHandler(value={JedisConnectionException.class})
