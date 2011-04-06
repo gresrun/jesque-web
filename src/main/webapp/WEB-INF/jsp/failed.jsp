@@ -9,7 +9,7 @@
 	<input type="submit" name="" value="Clear Failed Jobs" />
 </form>
 </c:if>
-<p class="sub">Showing <c:out value="${start + 1}" /> to <c:out value="${jsq:min(start + count, fullFailureCount)}" /> of <b><c:out value="${fullFailureCount}" /></b> jobs</p>
+<p class="sub">Showing <c:out value="${(fullFailureCount eq 0) ? 0 : start + 1}" /> to <c:out value="${jsq:min(start + count, fullFailureCount)}" /> of <b><c:out value="${fullFailureCount}" /></b> jobs</p>
 <ul class="failed">
 	<c:set var="index" value="0" />
 	<c:forEach items="${failures}" var="job">

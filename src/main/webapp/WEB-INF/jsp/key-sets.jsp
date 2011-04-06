@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://greghaines.net/jesque/web/tags/jsq" prefix="jsq" %>
 <c:if test="${not poll and empty param.partial}"><jsp:include page="header.jsp" /></c:if>
-<p class="sub">Showing <c:out value="${start + 1}" /> to <c:out value="${jsq:min(start + count, key.size)}" /> of <b><c:out value="${key.size}" /></b> elements</p>
+<p class="sub">Showing <c:out value="${(key.size eq 0) ? 0 : start + 1}" /> to <c:out value="${jsq:min(start + count, key.size)}" /> of <b><c:out value="${key.size}" /></b> elements</p>
 <h1>Key "<c:out value="${key}" />" is a <c:out value="${key.type}" /></h1>
 <table>
 	<c:forEach items="${key.arrayValue}" var="val">

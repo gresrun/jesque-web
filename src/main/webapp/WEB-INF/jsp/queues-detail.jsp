@@ -11,7 +11,7 @@
 <form method="POST" action="<c:url value="/queues/${queue}/remove" />" class="remove-queue">
 	<input type="submit" name="" value="Remove Queue" />
 </form>
-<p class="sub">Showing <c:out value="${start + 1}" /> to <c:out value="${jsq:min(start + count, queue.size)}" /> of <b><c:out value="${queue.size}" /></b> jobs</p>
+<p class="sub">Showing <c:out value="${(queue.size eq 0) ? 0 : start + 1}" /> to <c:out value="${jsq:min(start + count, queue.size)}" /> of <b><c:out value="${queue.size}" /></b> jobs</p>
 <table class="jobs">
 	<tr>
 		<th>Class</th>
