@@ -417,11 +417,9 @@ public class JesqueController
 				modelMap.addAttribute("workers", hostMap.get(workerName));
 			}
 		}
-		List<String> subTabs = null;
-		if (hostMap.size() > 1)
-		{
-			subTabs = new ArrayList<String>(hostMap.keySet());
-		}
+		final List<String> subTabs = (hostMap.size() > 1) 
+			? new ArrayList<String>(hostMap.keySet()) 
+			: null;
 		return new Object[]{activeSubTab, viewName, subTabs};
 	}
 
