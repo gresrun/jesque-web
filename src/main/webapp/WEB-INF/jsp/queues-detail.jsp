@@ -9,7 +9,7 @@
 <c:otherwise>
 <h1>Pending jobs on <span class="hl"><c:out value="${queue}" /></span></h1>
 <form method="POST" action="<c:url value="/queues/${queue}/remove" />" class="remove-queue">
-	<input type="submit" name="" value="Remove Queue" />
+	<input type="submit" name="" value="Remove Queue" onclick="return confirm('Are you absolutely sure? This cannot be undone.');" />
 </form>
 <p class="sub">Showing <c:out value="${(queue.size eq 0) ? 0 : start + 1}" /> to <c:out value="${jsq:min(start + count, queue.size)}" /> of <b><c:out value="${queue.size}" /></b> jobs</p>
 <table class="jobs">
