@@ -133,8 +133,8 @@ public class JesqueController
 	}
 	
 	@RequestMapping(value="/failed", method=GET)
-	public String failed(@RequestParam(value="start", defaultValue="0") final int offset, 
-			@RequestParam(value="count", defaultValue="20") final int count, final ModelMap modelMap)
+	public String failed(@RequestParam(value="start", defaultValue="0") final long offset, 
+			@RequestParam(value="count", defaultValue="20") final long count, final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Failed", null, null);
 		modelMap.addAttribute("start", offset);
@@ -152,21 +152,21 @@ public class JesqueController
 	}
 	
 	@RequestMapping(value="/failed/remove/{index}", method=GET)
-	public String failedRemove(@PathVariable("index") final int index)
+	public String failedRemove(@PathVariable("index") final long index)
 	{
 		this.failureDAO.remove(index);
 		return "redirect:/failed";
 	}
 	
 	@RequestMapping(value="/failed/requeue/{index}", method=GET)
-	public String failedRequeue(@PathVariable("index") final int index)
+	public String failedRequeue(@PathVariable("index") final long index)
 	{
 		this.failureDAO.requeue(index);
 		return "redirect:/failed";
 	}
 	
 	@RequestMapping(value="/failed/requeue/{index}", method=GET, headers="X-Requested-With=XMLHttpRequest")
-	public void failedRequeueXHR(@PathVariable("index") final int index, final HttpServletResponse resp)
+	public void failedRequeueXHR(@PathVariable("index") final long index, final HttpServletResponse resp)
 	throws IOException
 	{
 		final Date retriedAt = this.failureDAO.requeue(index);
@@ -205,8 +205,8 @@ public class JesqueController
 	
 	@RequestMapping(value="/queues/{queueName}", method=GET)
 	public String queues(@PathVariable("queueName") final String queueName, 
-			@RequestParam(value="start", defaultValue="0") final int offset, 
-			@RequestParam(value="count", defaultValue="20") final int count, 
+			@RequestParam(value="start", defaultValue="0") final long offset, 
+			@RequestParam(value="count", defaultValue="20") final long count, 
 			final ModelMap modelMap)
 	{
 		addHeaderAttributes(modelMap, "Queues", this.queueInfoDAO.getQueueNames(), queueName);
