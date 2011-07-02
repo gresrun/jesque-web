@@ -405,7 +405,7 @@ public class JesqueController
 		else
 		{ // Display a list of workers
 			viewName = "workers";
-			addPollController(modelMap, "workers/" + workerName, poll);
+			addPollController(modelMap, workerName, poll);
 			if ("all".equalsIgnoreCase(workerName))
 			{
 				activeSubTab = null;
