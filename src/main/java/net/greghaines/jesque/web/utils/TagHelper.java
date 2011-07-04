@@ -35,9 +35,7 @@ import static net.greghaines.jesque.utils.JesqueUtils.join;
 import static net.greghaines.jesque.utils.ResqueConstants.COLON;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import net.greghaines.jesque.json.ObjectMapperFactory;
@@ -55,11 +53,7 @@ public final class TagHelper
 
 	public static String formatDate(final Date date)
 	{
-		if (date == null)
-		{
-			return null;
-		}
-		return ResqueDateFormatThreadLocal.getInstance().format(date);
+		return (date == null) ? null : ResqueDateFormatThreadLocal.getInstance().format(date);
 	}
 
 	public static String toJson(final Object obj)
@@ -75,21 +69,19 @@ public final class TagHelper
 		{
 			return null;
 		}
-		final List<String> jsonStrs = new ArrayList<String>(args.length);
+		final StringBuilder sb = new StringBuilder();
+		String s = "";
 		for (final Object arg : args)
 		{
-			jsonStrs.add(toJson(arg));
+			sb.append(s).append(toJson(arg));
+			s = newLine;
 		}
-		return join(newLine, jsonStrs);
+		return sb.toString();
 	}
 	
 	public static String asBacktrace(final Throwable t)
 	{
-		if (t == null)
-		{
-			return null;
-		}
-		return join(newLine, createBacktrace(t));
+		return (t == null) ? null : join(newLine, createBacktrace(t));
 	}
 	
 	public static String workerShortName(final String workerName)
