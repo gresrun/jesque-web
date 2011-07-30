@@ -16,7 +16,6 @@
 		<constructor-arg value="${redis.password}" />
 		<constructor-arg value="${redis.namespace}" />
 		<constructor-arg value="${redis.database}" />
-		<constructor-arg value="${redis.jobPackage}" />
 	</bean>
 	
 	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
