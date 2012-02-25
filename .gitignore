@@ -3,3 +3,5 @@
 .settings/
 target/
 *.class
+
+jesque-web.log
