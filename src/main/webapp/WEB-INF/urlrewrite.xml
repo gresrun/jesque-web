@@ -12,7 +12,7 @@
 	</rule>
 	<rule>
 		<from>/</from>
-		<to last="true">/app/index</to>
+		<to last="true">/app/overview</to>
 	</rule>
 	<rule>
 		<from>/app/**</from>
