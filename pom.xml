@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
@@ -9,16 +10,19 @@
 	<groupId>net.greghaines</groupId>
 	<artifactId>jesque-web</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>Jesque WebApp</name>
 	<description>An implementation of the Resque web application in Java</description>
 	<url>https://github.com/gresrun/jesque-web</url>
 	<inceptionYear>2011</inceptionYear>
-	<packaging>war</packaging>
+	<prerequisites>
+		<maven>2.2.0</maven>
+	</prerequisites>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.version>3.0.5.RELEASE</spring.version>
-		<aspectj.version>1.6.11</aspectj.version>
-		<slf4j.version>1.6.1</slf4j.version>
+		<spring.version>3.1.1.RELEASE</spring.version>
+		<aspectj.version>1.6.12</aspectj.version>
+		<slf4j.version>1.6.4</slf4j.version>
 	</properties>
 	<licenses>
 		<license>
@@ -45,6 +49,39 @@
 			<timezone>-5</timezone>
 		</developer>
 	</developers>
+	<profiles>
+		<!-- Enable this profile and Jetty will run during the "test" phase -->
+		<profile>
+			<id>jetty-run</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>jetty-maven-plugin</artifactId>
+						<version>8.1.1.v20120215</version>
+						<configuration>
+							<scanIntervalSeconds>10</scanIntervalSeconds>
+							<webAppConfig>
+								<contextPath>/</contextPath>
+							</webAppConfig>
+							<webAppSourceDirectory>
+								${project.build.directory}/${project.build.finalName}
+							</webAppSourceDirectory>
+						</configuration>
+						<executions>
+							<execution>
+								<id>jetty-run</id>
+								<phase>test</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 			<plugin>
@@ -60,11 +97,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.10</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -87,7 +119,7 @@
 		<dependency>
 			<groupId>net.greghaines</groupId>
 			<artifactId>jesque</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
@@ -111,20 +143,20 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
-            <exclusions>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
 					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
-			<version>3.1.0</version>
+			<version>3.2.0</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -153,7 +185,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>0.9.29</version>
+			<version>1.0.0</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -165,7 +197,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
