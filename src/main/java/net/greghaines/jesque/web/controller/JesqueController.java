@@ -16,6 +16,8 @@
 package net.greghaines.jesque.web.controller;
 
 import static net.greghaines.jesque.utils.ResqueConstants.COLON;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -50,7 +52,7 @@ import net.greghaines.jesque.utils.VersionUtils;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,29 +87,29 @@ public class JesqueController
 		this.redisURI = this.config.getURI();
 	}
 	
-	@ExceptionHandler(value={JedisConnectionException.class})
-	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	@ExceptionHandler
+	@ResponseStatus(SERVICE_UNAVAILABLE)
 	public ModelAndView connectError(final JedisConnectionException exception)
 	{
-		return errorModelAndView(exception, "error", HttpStatus.SERVICE_UNAVAILABLE);
+		return errorModelAndView("error", exception, SERVICE_UNAVAILABLE);
 	}
 	
-	@ExceptionHandler(value={Exception.class})
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler
+	@ResponseStatus(INTERNAL_SERVER_ERROR)
 	public ModelAndView genericError(final Exception exception)
 	{
-		return errorModelAndView(exception, "error", HttpStatus.INTERNAL_SERVER_ERROR);
+		return errorModelAndView("error", exception, INTERNAL_SERVER_ERROR);
 	}
 	
-	private static ModelAndView errorModelAndView(final Throwable t, final String viewName, final HttpStatus status)
+	private static ModelAndView errorModelAndView(final String viewName, final Throwable t, final HttpStatus status)
 	{
-		final ModelAndView modelAndView = new ModelAndView(viewName);
-		modelAndView.addObject("errorCode", status.value());
-		modelAndView.addObject("errorName", toNiceCase(status.name()));
-		modelAndView.addObject("errorType", t.getClass().getName());
-		modelAndView.addObject("errorMessage", t.getMessage());
-		modelAndView.addObject("stackTrace", JesqueUtils.createBacktrace(t).toArray(new String[0]));
-		return modelAndView;
+		final ModelAndView model = new ModelAndView(viewName);
+		model.addObject("errorCode", status.value());
+		model.addObject("errorName", toNiceCase(status.name()));
+		model.addObject("errorType", t.getClass().getName());
+		model.addObject("errorMessage", t.getMessage());
+		model.addObject("stackTrace", JesqueUtils.createBacktrace(t).toArray(new String[0]));
+		return model;
 	}
 	
 	private static String toNiceCase(final String orig)
@@ -134,13 +136,13 @@ public class JesqueController
 	
 	@RequestMapping(value="/failed", method=GET)
 	public String failed(@RequestParam(value="start", defaultValue="0") final long offset, 
-			@RequestParam(value="count", defaultValue="20") final long count, final ModelMap modelMap)
+			@RequestParam(value="count", defaultValue="20") final long count, final Model model)
 	{
-		addHeaderAttributes(modelMap, "Failed", null, null);
-		modelMap.addAttribute("start", offset);
-		modelMap.addAttribute("count", count);
-		modelMap.addAttribute("fullFailureCount", this.failureDAO.getCount());
-		modelMap.addAttribute("failures", this.failureDAO.getFailures(offset, count));
+		addHeaderAttributes(model, "Failed", null, null);
+		model.addAttribute("start", offset);
+		model.addAttribute("count", count);
+		model.addAttribute("fullFailureCount", this.failureDAO.getCount());
+		model.addAttribute("failures", this.failureDAO.getFailures(offset, count));
 		return "failed";
 	}
 	
@@ -177,29 +179,29 @@ public class JesqueController
 	}
 	
 	@RequestMapping(value="/overview", method=GET)
-	public String overview(final ModelMap modelMap)
+	public String overview(final Model model)
 	{
-		addHeaderAttributes(modelMap, "Overview", null, null);
-		addQueuesAttributes(modelMap);
-		addWorkingAttributes(modelMap);
-		addPollController(modelMap, "overview", false);
+		addHeaderAttributes(model, "Overview", null, null);
+		addQueuesAttributes(model);
+		addWorkingAttributes(model);
+		addPollController(model, "overview", false);
 		return "overview";
 	}
 	
 	@RequestMapping(value="/overview.poll", method=GET)
-	public String overviewPoll(final ModelMap modelMap)
+	public String overviewPoll(final Model model)
 	{
-		addQueuesAttributes(modelMap);
-		addWorkingAttributes(modelMap);
-		addPollController(modelMap, "overview", true);
+		addQueuesAttributes(model);
+		addWorkingAttributes(model);
+		addPollController(model, "overview", true);
 		return "overview";
 	}
 	
 	@RequestMapping(value="/queues", method=GET)
-	public String queues(final ModelMap modelMap)
+	public String queues(final Model model)
 	{
-		addHeaderAttributes(modelMap, "Queues", null, null);
-		addQueuesAttributes(modelMap);
+		addHeaderAttributes(model, "Queues", null, null);
+		addQueuesAttributes(model);
 		return "queues";
 	}
 	
@@ -207,19 +209,19 @@ public class JesqueController
 	public String queues(@PathVariable("queueName") final String queueName, 
 			@RequestParam(value="start", defaultValue="0") final long offset, 
 			@RequestParam(value="count", defaultValue="20") final long count, 
-			final ModelMap modelMap)
+			final Model model)
 	{
-		addHeaderAttributes(modelMap, "Queues", this.queueInfoDAO.getQueueNames(), queueName);
-		modelMap.addAttribute("start", offset);
-		modelMap.addAttribute("count", count);
+		addHeaderAttributes(model, "Queues", this.queueInfoDAO.getQueueNames(), queueName);
+		model.addAttribute("start", offset);
+		model.addAttribute("count", count);
 		final QueueInfo queueInfo = this.queueInfoDAO.getQueueInfo(queueName, offset, count);
 		if (queueInfo == null)
 		{
-			modelMap.addAttribute("queueName", queueName);
+			model.addAttribute("queueName", queueName);
 		}
 		else
 		{
-			modelMap.addAttribute("queue", queueInfo);
+			model.addAttribute("queue", queueInfo);
 		}
 		return "queues-detail";
 	}
@@ -232,32 +234,32 @@ public class JesqueController
 	}
 	
 	@RequestMapping(value="/stats", method=GET)
-	public String stats(final ModelMap modelMap)
+	public String stats(final Model model)
 	{
 		return "redirect:/stats/resque";
 	}
 	
 	@RequestMapping(value="/stats/{statType}", method=GET)
-	public String stats(@PathVariable("statType") final String statType, final ModelMap modelMap)
+	public String stats(@PathVariable("statType") final String statType, final Model model)
 	{
 		if ("resque".equals(statType))
 		{
-			addHeaderAttributes(modelMap, "Stats", statsSubTabs, "resque");
-			modelMap.addAttribute("title", "Resque Client connected to " + this.redisURI);
-			modelMap.addAttribute("stats", createResqueStats());
+			addHeaderAttributes(model, "Stats", statsSubTabs, "resque");
+			model.addAttribute("title", "Resque Client connected to " + this.redisURI);
+			model.addAttribute("stats", createResqueStats());
 		}
 		else if ("redis".equals(statType))
 		{
-			addHeaderAttributes(modelMap, "Stats", statsSubTabs, "redis");
-			modelMap.addAttribute("title", this.redisURI);
-			modelMap.addAttribute("stats", this.keysDAO.getRedisInfo());
+			addHeaderAttributes(model, "Stats", statsSubTabs, "redis");
+			model.addAttribute("title", this.redisURI);
+			model.addAttribute("stats", this.keysDAO.getRedisInfo());
 		}
 		else if ("keys".equals(statType))
 		{
-			addHeaderAttributes(modelMap, "Stats", statsSubTabs, "keys");
-			modelMap.addAttribute("title", "Keys owned by Resque Client connected to " + this.redisURI);
-			modelMap.addAttribute("subTitle", "(All keys are actually prefixed with \"" + this.config.getNamespace() + COLON + "\")");
-			modelMap.addAttribute("keys", this.keysDAO.getKeyInfos());
+			addHeaderAttributes(model, "Stats", statsSubTabs, "keys");
+			model.addAttribute("title", "Keys owned by Resque Client connected to " + this.redisURI);
+			model.addAttribute("subTitle", "(All keys are actually prefixed with \"" + this.config.getNamespace() + COLON + "\")");
+			model.addAttribute("keys", this.keysDAO.getKeyInfos());
 		}
 		return "stats";
 	}
@@ -301,91 +303,86 @@ public class JesqueController
 	public String statsKey(@PathVariable("key") final String key, 
 			@RequestParam(value="start", defaultValue="0") final int offset, 
 			@RequestParam(value="count", defaultValue="20") final int count, 
-			final ModelMap modelMap)
+			final Model model)
 	{
-		addHeaderAttributes(modelMap, "Stats", statsSubTabs, "keys");
-		modelMap.addAttribute("start", offset);
-		modelMap.addAttribute("count", count);
+		addHeaderAttributes(model, "Stats", statsSubTabs, "keys");
+		model.addAttribute("start", offset);
+		model.addAttribute("count", count);
 		final KeyInfo keyInfo = this.keysDAO.getKeyInfo(this.config.getNamespace() + COLON + key, offset, count);
 		if (keyInfo == null)
 		{
-			modelMap.addAttribute("keyName", key);
+			model.addAttribute("keyName", key);
 		}
 		else
 		{
-			modelMap.addAttribute("key", keyInfo);
+			model.addAttribute("key", keyInfo);
 		}
 		return (keyInfo == null || KeyType.STRING.equals(keyInfo.getType())) ? "key-string" : "key-sets";
 	}
 	
 	@RequestMapping(value="/workers", method=GET)
-	public String workers(final ModelMap modelMap)
+	public String workers(final Model model)
 	{
-		addHeaderAttributes(modelMap, "Workers", null, null);
-		return addWorkersAttributes(modelMap, false);
+		addHeaderAttributes(model, "Workers", null, null);
+		return addWorkersAttributes(model, false);
 	}
 	
 	@RequestMapping(value="/workers.poll", method=GET)
-	public String workersPoll(final ModelMap modelMap)
+	public String workersPoll(final Model model)
 	{
-		return addWorkersAttributes(modelMap, true);
+		return addWorkersAttributes(model, true);
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping(value="/workers/{workerName}", method=GET)
-	public String workers(@PathVariable("workerName") final String workerName, final ModelMap modelMap)
+	public String workers(@PathVariable("workerName") final String workerName, final Model model)
 	{
-		final Object[] retVal = addWorkersAttributes(workerName, modelMap, false);
-		final String activeSubTab = (String) retVal[0];
-		final String viewName = (String) retVal[1];
-		final List<String> subTabs = (List<String>) retVal[2];
-		addHeaderAttributes(modelMap, "Workers", subTabs, activeSubTab);
-		return viewName;
+		final WorkerValues wv = addWorkersAttributes(workerName, model, false);
+		addHeaderAttributes(model, "Workers", wv.getSubTabs(), wv.getActiveSubTab());
+		return wv.getViewName();
 	}
 	
 	@RequestMapping(value="/workers/{workerName}.poll", method=GET)
-	public String workersPoll(@PathVariable("workerName") final String workerName, final ModelMap modelMap)
+	public String workersPoll(@PathVariable("workerName") final String workerName, final Model model)
 	{
-		final Object[] retVal = addWorkersAttributes(workerName, modelMap, true);
-		return (String) retVal[1];
+		return addWorkersAttributes(workerName, model, true).getViewName();
 	}
 	
 	@RequestMapping(value="/working", method=GET)
-	public String working(final ModelMap modelMap)
+	public String working(final Model model)
 	{
-		addHeaderAttributes(modelMap, "Working", null, null);
-		addWorkingAttributes(modelMap);
+		addHeaderAttributes(model, "Working", null, null);
+		addWorkingAttributes(model);
 		return "working";
 	}
 	
 	@RequestMapping(value="/working/{workerName}", method=GET)
-	public String working(@PathVariable("workerName") final String workerName, final ModelMap modelMap)
+	public String working(@PathVariable("workerName") final String workerName, final Model model)
 	{
-		addHeaderAttributes(modelMap, "Working", null, null);
-		modelMap.addAttribute("worker", this.workerInfoDAO.getWorker(workerName));
+		addHeaderAttributes(model, "Working", null, null);
+		model.addAttribute("worker", this.workerInfoDAO.getWorker(workerName));
 		return "working-detail";
 	}
 	
-	private String addWorkersAttributes(final ModelMap modelMap, final boolean poll)
+	private String addWorkersAttributes(final Model model, final boolean poll)
 	{
 		final Map<String,List<WorkerInfo>> hostMap = this.workerInfoDAO.getWorkerHostMap();
 		final String viewName;
 		if (hostMap.size() == 1)
 		{
-			modelMap.addAttribute("workers", combineWorkerInfos(hostMap));
-			addPollController(modelMap, "workers", poll);
+			model.addAttribute("workers", combineWorkerInfos(hostMap));
+			addPollController(model, "workers", poll);
 			viewName = "workers";
 		}
 		else
 		{
-			modelMap.addAttribute("hostMap", hostMap);
-			modelMap.addAttribute("totalWorkerCount", totalWorkerInfoCount(hostMap));
+			model.addAttribute("hostMap", hostMap);
+			model.addAttribute("totalWorkerCount", totalWorkerInfoCount(hostMap));
 			viewName = "workers-hosts";
 		}
 		return viewName;
 	}
 	
-	private Object[] addWorkersAttributes(final String workerName, final ModelMap modelMap, final boolean poll)
+	private WorkerValues addWorkersAttributes(final String workerName, final Model model, final boolean poll)
 	{
 		final WorkerInfo workerInfo = this.workerInfoDAO.getWorker(workerName);
 		final Map<String,List<WorkerInfo>> hostMap = this.workerInfoDAO.getWorkerHostMap();
@@ -395,7 +392,7 @@ public class JesqueController
 		{ // Display workers detail
 			activeSubTab = workerInfo.getHost();
 			viewName = "workers-detail";
-			modelMap.addAttribute("worker", workerInfo);
+			model.addAttribute("worker", workerInfo);
 		}
 		else if (!hostMap.containsKey(workerName) && !"all".equalsIgnoreCase(workerName))
 		{ // Unknown worker name
@@ -405,52 +402,52 @@ public class JesqueController
 		else
 		{ // Display a list of workers
 			viewName = "workers";
-			addPollController(modelMap, workerName, poll);
+			addPollController(model, workerName, poll);
 			if ("all".equalsIgnoreCase(workerName))
 			{
 				activeSubTab = null;
-				modelMap.addAttribute("workers", combineWorkerInfos(hostMap));
+				model.addAttribute("workers", combineWorkerInfos(hostMap));
 			}
 			else
 			{
 				activeSubTab = workerName;
-				modelMap.addAttribute("workers", hostMap.get(workerName));
+				model.addAttribute("workers", hostMap.get(workerName));
 			}
 		}
 		final List<String> subTabs = (hostMap.size() > 1) 
 			? new ArrayList<String>(hostMap.keySet()) 
 			: null;
-		return new Object[]{activeSubTab, viewName, subTabs};
+		return new WorkerValues(activeSubTab, viewName, subTabs);
 	}
 
-	private void addWorkingAttributes(final ModelMap modelMap)
+	private void addWorkingAttributes(final Model model)
 	{
-		modelMap.addAttribute("totalWorkerCount", this.workerInfoDAO.getWorkerCount());
-		modelMap.addAttribute("working", this.workerInfoDAO.getActiveWorkers());
+		model.addAttribute("totalWorkerCount", this.workerInfoDAO.getWorkerCount());
+		model.addAttribute("working", this.workerInfoDAO.getActiveWorkers());
 	}
 
-	private void addQueuesAttributes(final ModelMap modelMap)
+	private void addQueuesAttributes(final Model model)
 	{
-		modelMap.addAttribute("queues", this.queueInfoDAO.getQueueInfos());
-		modelMap.addAttribute("totalFailureCount", this.failureDAO.getCount());
+		model.addAttribute("queues", this.queueInfoDAO.getQueueInfos());
+		model.addAttribute("totalFailureCount", this.failureDAO.getCount());
 	}
 
-	private void addHeaderAttributes(final ModelMap modelMap, final String activeTab, 
+	private void addHeaderAttributes(final Model model, final String activeTab, 
 			final List<String> subTabs, final String activeSubTab)
 	{
-		modelMap.addAttribute("tabs", tabs);
-		modelMap.addAttribute("activeTab", activeTab);
+		model.addAttribute("tabs", tabs);
+		model.addAttribute("activeTab", activeTab);
 		if (subTabs != null)
 		{
-			modelMap.addAttribute("subTabs", subTabs);
-			modelMap.addAttribute("activeSubTab", activeSubTab);
+			model.addAttribute("subTabs", subTabs);
+			model.addAttribute("activeSubTab", activeSubTab);
 		}
-		modelMap.addAttribute("namespace", this.config.getNamespace());
-		modelMap.addAttribute("redisUri", this.redisURI);
-		modelMap.addAttribute("version", VersionUtils.getVersion());
+		model.addAttribute("namespace", this.config.getNamespace());
+		model.addAttribute("redisUri", this.redisURI);
+		model.addAttribute("version", VersionUtils.getVersion());
 	}
 
-	private static void addPollController(final ModelMap modelMap, final String path, final boolean poll)
+	private static void addPollController(final Model model, final String path, final boolean poll)
 	{
 		final StringBuilder sb = new StringBuilder(64);
 		sb.append("<p class=\"poll\">");
@@ -463,8 +460,8 @@ public class JesqueController
 			sb.append("<a href=\"").append(path).append(".poll\" rel=\"poll\">Live Poll</a>");
 		}
 		sb.append("</p>");
-		modelMap.addAttribute("pollController", sb.toString());
-		modelMap.addAttribute("poll", poll);
+		model.addAttribute("pollController", sb.toString());
+		model.addAttribute("poll", poll);
 	}
 	
 	private static List<WorkerInfo> combineWorkerInfos(final Map<?,List<WorkerInfo>> hostMap)
@@ -485,5 +482,35 @@ public class JesqueController
 			count += workerInfos.size();
 		}
 		return count;
+	}
+	
+	private static final class WorkerValues
+	{
+		private final String activeSubTab;
+		private final String viewName;
+		private final List<String> subTabs;
+		
+		public WorkerValues(final String activeSubTab, final String viewName,
+				final List<String> subTabs)
+		{
+			this.activeSubTab = activeSubTab;
+			this.viewName = viewName;
+			this.subTabs = subTabs;
+		}
+
+		public String getActiveSubTab()
+		{
+			return this.activeSubTab;
+		}
+
+		public String getViewName()
+		{
+			return this.viewName;
+		}
+
+		public List<String> getSubTabs()
+		{
+			return this.subTabs;
+		}
 	}
 }
