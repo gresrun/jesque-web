@@ -5,7 +5,7 @@
 			<pattern>%d [%t] %-5p %c - %m%n</pattern>
 		</encoder>
 	</appender>
-	<appender name="R" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="rollingLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<File>jesque-web.log</File>
 		<encoder>
 			<pattern>%p %t %c - %m%n</pattern>
@@ -18,8 +18,9 @@
 			<MaxFileSize>100KB</MaxFileSize>
 		</triggeringPolicy>
 	</appender>
-	<root level="info">
+	<logger name="org.springframework" level="WARN" />
+	<root level="INFO">
 		<appender-ref ref="stdout" />
-		<appender-ref ref="R" />
+		<appender-ref ref="rollingLogFile" />
 	</root>
 </configuration>
