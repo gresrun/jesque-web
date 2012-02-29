@@ -46,7 +46,7 @@
 					<property name="objectMapper">
 						<bean class="net.greghaines.jesque.json.ObjectMapperFactory" factory-method="get" />
 					</property>
-					<property name="renderedAttributes">
+					<property name="modelKeys">
 						<set>
 							<value>count</value>
 							<value>errorCode</value>
