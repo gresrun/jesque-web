@@ -16,6 +16,12 @@ Build the WAR and start Jetty:
 
 	mvn clean jetty:run
 ***
+If you get 
+> No plugin found for prefix 'jetty' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories ...
+
+Running maven 3.x you could try 
+
+	mvn org.mortbay.jetty:maven-jetty-plugin:run
 
 Misc.
 -----
