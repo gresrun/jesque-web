@@ -14,7 +14,7 @@ Download the latest source at:
 	https://github.com/gresrun/jesque-web
 Build the WAR and start Jetty:
 
-	mvn clean jetty:run
+	mvn -Pjetty-run clean test
 ***
 
 Misc.
