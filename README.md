@@ -9,12 +9,12 @@ Jesque-Web is a [Maven](http://maven.apache.org/) project built using [Spring MV
 
 How do I use it?
 ----------------
-Download the latest source at:
+1. Download the latest source at: `https://github.com/gresrun/jesque-web`
+1. Edit the [Redis connection settings](https://github.com/gresrun/jesque-web/blob/master/src/main/resources/META-INF/spring/redis.properties) for your environment.
 
-	https://github.com/gresrun/jesque-web
-Build the WAR and start Jetty:
+1. Start Jetty for testing: `mvn -Pjetty-run clean test`
+1. Build WAR for deployment to a servlet container: `mvn clean package`
 
-	mvn -Pjetty-run clean test
 ***
 
 Misc.
