@@ -1008,15 +1008,14 @@ Date.prototype.getOrdinal = function() {
             if (this.day > Date.getDaysInMonth(this.year, this.month)) {
                 throw new RangeError(this.day + " is not a valid value for days.");
             }
-            var r = new Date(this.year, this.month, this.day, this.hour, this.minute, this.second);
-            if (this.timezone) {
-                r.set({
-                    timezone: this.timezone
-                });
-            } else if (this.timezoneOffset) {
-                r.set({
-                    timezoneOffset: this.timezoneOffset
-                });
+            var r;
+            if (this.timezone !== undefined) {
+                var offset = Date.getTimezoneOffset(this.timezone);
+                r = new Date(Date.UTC(this.year, this.month, this.day, this.hour + Number(offset), this.minute, this.second));
+            } else if (this.timezoneOffset !== undefined) {
+                r = new Date(Date.UTC(this.year, this.month, this.day, this.hour + this.timezoneOffset, this.minute, this.second));
+            } else {
+            	r = new Date(this.year, this.month, this.day, this.hour, this.minute, this.second);
             }
             return r;
         },
@@ -1212,8 +1211,20 @@ Date.prototype.getOrdinal = function() {
         return g._start.call({}, s);
     };
 }());
-Date._parse = Date.parse;
-Date.parse = function(s) {
+//Date._parse = Date.parse;
+//Date.parse = function(s) {
+//    var r = null;
+//    if (!s) {
+//        return null;
+//    }
+//    try {
+//        r = Date.Grammar.start.call({}, s);
+//    } catch (e) {
+//        return null;
+//    }
+//    return ((r[1].length === 0) ? r[0] : null);
+//};
+Date.betterParse = function(s) {
     var r = null;
     if (!s) {
         return null;

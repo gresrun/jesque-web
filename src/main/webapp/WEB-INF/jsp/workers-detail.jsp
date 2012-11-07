@@ -28,8 +28,15 @@
 		<td class="process">
 		<c:choose>
 		<c:when test="${not empty worker.status}">
-			<code><c:out value="${worker.status.payload.className}" /></code>
-			<small><a class="queue time" href="<c:url value="/working/${worker}" />"><c:out value="${jsq:formatDate(worker.status.runAt)}" /></a></small>
+			<c:choose>
+			<c:when test="${worker.status.paused}">
+				<span class="waiting">Paused since <span class="time"><c:out value="${jsq:formatDate(worker.status.runAt)}" /></span></span>
+			</c:when>
+			<c:otherwise>
+				<code><c:out value="${worker.status.payload.className}" /></code>
+				<small><a class="queue time" href="<c:url value="/working/${worker}" />"><c:out value="${jsq:formatDate(worker.status.runAt)}" /></a></small>
+			</c:otherwise>
+			</c:choose>
 		</c:when>
 		<c:otherwise>
 			<span class="waiting">Waiting for a job...</span>

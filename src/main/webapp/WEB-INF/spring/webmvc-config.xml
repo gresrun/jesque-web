@@ -23,13 +23,13 @@
 
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="favorPathExtension" value="false" />
-		<property name="mediaTypes">
+		<!-- <property name="mediaTypes">
 			<map>
 				<entry key="html" value="text/html" />
 				<entry key="poll" value="text/html" />
 				<entry key="json" value="application/json" />
 			</map>
-		</property>
+		</property> -->
 		<property name="viewResolvers">
 			<list>
 				<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
@@ -41,7 +41,7 @@
 		</property>
 		<property name="defaultViews">
 			<list>
-				<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+				<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
 					<property name="prefixJson" value="false" />
 					<property name="objectMapper">
 						<bean class="net.greghaines.jesque.json.ObjectMapperFactory" factory-method="get" />

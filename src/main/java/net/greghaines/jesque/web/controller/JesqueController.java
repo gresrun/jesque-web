@@ -296,6 +296,7 @@ public class JesqueController
 		resqueStats.put("servers", "[\"" + this.redisURI + "\"]");
 		resqueStats.put("workers", this.workerInfoDAO.getWorkerCount());
 		resqueStats.put("working", this.workerInfoDAO.getActiveWorkerCount());
+		resqueStats.put("paused", this.workerInfoDAO.getPausedWorkerCount());
 		return resqueStats;
 	}
 
