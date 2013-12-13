@@ -5,6 +5,8 @@ Jesque-Web is a faithful re-implementation of the [Sinatra](http://www.sinatrarb
 
 Jesque-Web is a [Maven](http://maven.apache.org/) project built using [Spring MVC](http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html) and depends on [Jesque](https://github.com/gresrun/jesque), [Jedis](https://github.com/xetorthio/jedis) to connect to [Redis](http://redis.io/), [Jackson](http://jackson.codehaus.org/) to map to/from [JSON](http://www.json.org/) and [SLF4J](http://www.slf4j.org/) for logging.
 
+[![Build Status](https://travis-ci.org/gresrun/jesque-web.png?branch=master)](https://travis-ci.org/gresrun/jesque-web)
+
 ***
 
 How do I use it?
