@@ -13,21 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Copyright 2011 Greg Haines
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *    http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package net.greghaines.jesque.web.utils;
 
 import static net.greghaines.jesque.utils.JesqueUtils.createBacktrace;
@@ -48,8 +33,8 @@ import net.greghaines.jesque.utils.ResqueDateFormatThreadLocal;
  */
 public final class TagHelper
 {
-	private static final String newLine = "\n";
-	private static final Pattern colonPattern = Pattern.compile(COLON);
+	private static final String NEW_LINE = "\n";
+	private static final Pattern COLON_PATTERN = Pattern.compile(COLON);
 
 	public static String formatDate(final Date date)
 	{
@@ -74,14 +59,14 @@ public final class TagHelper
 		for (final Object arg : args)
 		{
 			sb.append(s).append(toJson(arg));
-			s = newLine;
+			s = NEW_LINE;
 		}
 		return sb.toString();
 	}
 	
 	public static String asBacktrace(final Throwable t)
 	{
-		return (t == null) ? null : join(newLine, createBacktrace(t));
+		return (t == null) ? null : join(NEW_LINE, createBacktrace(t));
 	}
 	
 	public static String workerShortName(final String workerName)
@@ -90,13 +75,13 @@ public final class TagHelper
 		{
 			return null;
 		}
-		final String[] nameParts = colonPattern.split(workerName);
+		final String[] nameParts = COLON_PATTERN.split(workerName);
 		return nameParts[0] + COLON + nameParts[1];
 	}
 	
 	public static String newLine()
 	{
-		return newLine;
+		return NEW_LINE;
 	}
 
 	private TagHelper(){}
