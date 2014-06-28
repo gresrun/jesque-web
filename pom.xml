@@ -19,12 +19,12 @@
     </prerequisites>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.2.8.RELEASE</spring.version>
-        <spring.mvc.version>3.2.8.RELEASE</spring.mvc.version>
-        <aspectj.version>1.7.1</aspectj.version>
-        <jedis.version>2.4.1</jedis.version>
+        <spring.version>3.2.9.RELEASE</spring.version>
+        <spring.mvc.version>3.2.9.RELEASE</spring.mvc.version>
+        <aspectj.version>1.8.1</aspectj.version>
+        <jedis.version>2.5.1</jedis.version>
         <jesque.version>2.0.0</jesque.version>
-        <slf4j.version>1.7.6</slf4j.version>
+        <slf4j.version>1.7.7</slf4j.version>
         <junit.version>4.11</junit.version>
     </properties>
     <licenses>
@@ -122,13 +122,6 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>repository.springsource.milestone</id>
-            <name>SpringSource Milestone Repository</name>
-            <url>http://repo.springsource.org/milestone</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>net.greghaines</groupId>
@@ -199,7 +192,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
