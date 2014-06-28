@@ -31,58 +31,49 @@ import net.greghaines.jesque.utils.ResqueDateFormatThreadLocal;
  * 
  * @author Greg Haines
  */
-public final class TagHelper
-{
-	private static final String NEW_LINE = "\n";
-	private static final Pattern COLON_PATTERN = Pattern.compile(COLON);
+public final class TagHelper {
+    
+    private static final String NEW_LINE = "\n";
+    private static final Pattern COLON_PATTERN = Pattern.compile(COLON);
 
-	public static String formatDate(final Date date)
-	{
-		return (date == null) ? null : ResqueDateFormatThreadLocal.getInstance().format(date);
-	}
+    public static String formatDate(final Date date) {
+        return (date == null) ? null : ResqueDateFormatThreadLocal.getInstance().format(date);
+    }
 
-	public static String toJson(final Object obj)
-	throws IOException
-	{
-		return ObjectMapperFactory.get().writeValueAsString(obj);
-	}
+    public static String toJson(final Object obj) throws IOException {
+        return ObjectMapperFactory.get().writeValueAsString(obj);
+    }
 
-	public static String showArgs(final Object[] args)
-	throws IOException
-	{
-		if (args == null)
-		{
-			return null;
-		}
-		final StringBuilder sb = new StringBuilder();
-		String s = "";
-		for (final Object arg : args)
-		{
-			sb.append(s).append(toJson(arg));
-			s = NEW_LINE;
-		}
-		return sb.toString();
-	}
-	
-	public static String asBacktrace(final Throwable t)
-	{
-		return (t == null) ? null : join(NEW_LINE, createBacktrace(t));
-	}
-	
-	public static String workerShortName(final String workerName)
-	{
-		if (workerName == null)
-		{
-			return null;
-		}
-		final String[] nameParts = COLON_PATTERN.split(workerName);
-		return nameParts[0] + COLON + nameParts[1];
-	}
-	
-	public static String newLine()
-	{
-		return NEW_LINE;
-	}
+    public static String showArgs(final Object[] args) throws IOException {
+        if (args == null) {
+            return null;
+        }
+        final StringBuilder buf = new StringBuilder();
+        String prefix = "";
+        for (final Object arg : args) {
+            buf.append(prefix).append(toJson(arg));
+            prefix = NEW_LINE;
+        }
+        return buf.toString();
+    }
 
-	private TagHelper(){}
+    public static String asBacktrace(final Throwable t) {
+        return (t == null) ? null : join(NEW_LINE, createBacktrace(t));
+    }
+
+    public static String workerShortName(final String workerName) {
+        if (workerName == null) {
+            return null;
+        }
+        final String[] nameParts = COLON_PATTERN.split(workerName);
+        return nameParts[0] + COLON + nameParts[1];
+    }
+
+    public static String newLine() {
+        return NEW_LINE;
+    }
+
+    private TagHelper() {
+        // Utility class
+    }
 }
