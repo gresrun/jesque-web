@@ -13,7 +13,7 @@
 	<c:forEach items="${hostMap}" var="entry">
 	<tr>
 		<td class="queue"><a class="queue" href="<c:url value="/workers/${entry.key}" />"><c:out value="${entry.key}" /></a></td>
-		<td class="size"><c:out value="${entry.value.size}" /></td>
+		<td class="size"><c:out value="${entry.value.size()}" /></td>
 	</tr>
 	</c:forEach>
 	<tr class="failed">
