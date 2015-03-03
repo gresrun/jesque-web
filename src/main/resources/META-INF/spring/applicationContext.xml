@@ -33,6 +33,7 @@
 		<constructor-arg value="${redis.port}" />
 		<constructor-arg value="${redis.timeout}" />
 		<constructor-arg value="${redis.password}" />
+		<constructor-arg value="${redis.database}" />
 	</bean>
 	
 	<bean id="failureDAO" class="net.greghaines.jesque.meta.dao.impl.FailureDAORedisImpl">
