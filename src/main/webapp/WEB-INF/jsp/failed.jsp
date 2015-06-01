@@ -39,7 +39,7 @@
 			<dt>Arguments</dt>
 			<dd><pre><c:out value="${(not empty job.payload) ? jsq:showArgs(job.payload.args) : 'null'}" /></pre></dd>
 			<dt>Exception</dt>
-			<dd><code><c:out value="${job.exception.class.name}" /></code></dd>
+			<dd><code><c:out value="${job.exception.getClass().name}" /></code></dd>
 			<dt>Error</dt>
 			<dd class="error">
 				<a href="#" class="backtrace"><c:out value="${job.exception.message}" /></a>
