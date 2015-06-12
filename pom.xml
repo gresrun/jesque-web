@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -15,11 +14,9 @@
     <description>An implementation of the Resque web application in Java</description>
     <url>https://github.com/gresrun/jesque-web</url>
     <inceptionYear>2011</inceptionYear>
-
     <prerequisites>
         <maven>3.0.0</maven>
     </prerequisites>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.7</java.version>
@@ -35,7 +32,6 @@
         <org.springframework.version>4.1.6.RELEASE</org.springframework.version>
         <redis.clients.jedis.version>2.7.2</redis.clients.jedis.version>
         <taglibs.standard.version>1.1.2</taglibs.standard.version>
-
         <!-- plugin version properties -->
         <org.apache.maven.plugins.compiler.version>3.3</org.apache.maven.plugins.compiler.version>
         <org.apache.maven.plugins.javadoc.version>2.10.3</org.apache.maven.plugins.javadoc.version>
@@ -43,9 +39,7 @@
         <org.apache.maven.plugins.source.version>2.4</org.apache.maven.plugins.source.version>
         <org.apache.maven.plugins.war.version>2.6</org.apache.maven.plugins.war.version>
         <org.mortbay.jetty.maven.plugin.version>8.1.16.v20140903</org.mortbay.jetty.maven.plugin.version>
-
     </properties>
-
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -53,25 +47,21 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/gresrun/jesque-web/issues</url>
     </issueManagement>
-
     <ciManagement>
         <system>Travis</system>
         <url>https://travis-ci.org/gresrun/jesque-web</url>
         <notifiers/>
     </ciManagement>
-
     <scm>
         <connection>scm:git:git@github.com:gresrun/jesque-web.git</connection>
         <developerConnection>scm:git:git@github.com:gresrun/jesque-web.git</developerConnection>
         <url>git@github.com:gresrun/jesque-web.git</url>
         <tag>HEAD</tag>
     </scm>
-
     <developers>
         <developer>
             <id>gresrun</id>
@@ -96,8 +86,7 @@
                             <webAppConfig>
                                 <contextPath>/</contextPath>
                             </webAppConfig>
-                            <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}
-                            </webAppSourceDirectory>
+                            <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
                         </configuration>
                         <executions>
                             <execution>
@@ -230,7 +219,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
