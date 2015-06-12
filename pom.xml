@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -14,19 +15,37 @@
     <description>An implementation of the Resque web application in Java</description>
     <url>https://github.com/gresrun/jesque-web</url>
     <inceptionYear>2011</inceptionYear>
+
     <prerequisites>
         <maven>3.0.0</maven>
     </prerequisites>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.2.9.RELEASE</spring.version>
-        <spring.mvc.version>3.2.9.RELEASE</spring.mvc.version>
-        <aspectj.version>1.8.1</aspectj.version>
-        <jedis.version>2.5.1</jedis.version>
-        <jesque.version>2.0.0</jesque.version>
-        <slf4j.version>1.7.7</slf4j.version>
-        <junit.version>4.11</junit.version>
+        <java.version>1.7</java.version>
+        <!-- dependency version properties -->
+        <ch.qos.logback.classic.version>1.1.3</ch.qos.logback.classic.version>
+        <javax.servlet.api.version>3.1.0</javax.servlet.api.version>
+        <javax.servlet.jstl.version>1.1.2</javax.servlet.jstl.version>
+        <junit.version>4.12</junit.version>
+        <net.greghaines.jesque.version>2.0.2</net.greghaines.jesque.version>
+        <org.tuckey.urlrewritefilter.version>4.0.4</org.tuckey.urlrewritefilter.version>
+        <org.aspectj.version>1.8.6</org.aspectj.version>
+        <org.slf4j.version>1.7.12</org.slf4j.version>
+        <org.springframework.version>4.1.6.RELEASE</org.springframework.version>
+        <redis.clients.jedis.version>2.7.2</redis.clients.jedis.version>
+        <taglibs.standard.version>1.1.2</taglibs.standard.version>
+
+        <!-- plugin version properties -->
+        <org.apache.maven.plugins.compiler.version>3.3</org.apache.maven.plugins.compiler.version>
+        <org.apache.maven.plugins.javadoc.version>2.10.3</org.apache.maven.plugins.javadoc.version>
+        <org.apache.maven.plugins.release.version>2.5.2</org.apache.maven.plugins.release.version>
+        <org.apache.maven.plugins.source.version>2.4</org.apache.maven.plugins.source.version>
+        <org.apache.maven.plugins.war.version>2.6</org.apache.maven.plugins.war.version>
+        <org.mortbay.jetty.maven.plugin.version>8.1.16.v20140903</org.mortbay.jetty.maven.plugin.version>
+
     </properties>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -34,21 +53,25 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/gresrun/jesque-web/issues</url>
     </issueManagement>
+
     <ciManagement>
         <system>Travis</system>
         <url>https://travis-ci.org/gresrun/jesque-web</url>
         <notifiers/>
     </ciManagement>
+
     <scm>
         <connection>scm:git:git@github.com:gresrun/jesque-web.git</connection>
         <developerConnection>scm:git:git@github.com:gresrun/jesque-web.git</developerConnection>
         <url>git@github.com:gresrun/jesque-web.git</url>
-	<tag>HEAD</tag>
+        <tag>HEAD</tag>
     </scm>
+
     <developers>
         <developer>
             <id>gresrun</id>
@@ -67,13 +90,14 @@
                     <plugin>
                         <groupId>org.mortbay.jetty</groupId>
                         <artifactId>jetty-maven-plugin</artifactId>
-                        <version>8.1.7.v20120910</version>
+                        <version>${org.mortbay.jetty.maven.plugin.version}</version>
                         <configuration>
                             <scanIntervalSeconds>10</scanIntervalSeconds>
                             <webAppConfig>
                                 <contextPath>/</contextPath>
                             </webAppConfig>
-                            <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
+                            <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}
+                            </webAppSourceDirectory>
                         </configuration>
                         <executions>
                             <execution>
@@ -94,31 +118,31 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>${org.apache.maven.plugins.compiler.version}</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
+                <version>${org.apache.maven.plugins.war.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
+                <version>${org.apache.maven.plugins.release.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>${org.apache.maven.plugins.source.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
+                <version>${org.apache.maven.plugins.javadoc.version}</version>
             </plugin>
         </plugins>
     </build>
@@ -126,22 +150,21 @@
         <dependency>
             <groupId>net.greghaines</groupId>
             <artifactId>jesque</artifactId>
-            <version>${jesque.version}</version>
+            <version>${net.greghaines.jesque.version}</version>
         </dependency>
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>${jedis.version}</version>
+            <version>${redis.clients.jedis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
+            <version>${org.aspectj.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -152,7 +175,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>${spring.mvc.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -163,42 +185,42 @@
         <dependency>
             <groupId>org.tuckey</groupId>
             <artifactId>urlrewritefilter</artifactId>
-            <version>3.2.0</version>
+            <version>${org.tuckey.urlrewritefilter.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
+            <version>${javax.servlet.jstl.version}</version>
         </dependency>
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
-            <version>1.1.2</version>
+            <version>${taglibs.standard.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <version>${org.slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
+            <version>${org.slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.2</version>
+            <version>${ch.qos.logback.classic.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -208,4 +230,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${org.springframework.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
