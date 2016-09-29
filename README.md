@@ -18,6 +18,12 @@ How do I use it?
 1. Build WAR for deployment to a servlet container: `mvn clean package`
 
 ***
+If you get 
+> No plugin found for prefix 'jetty' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories ...
+
+Running maven 3.x you could try 
+
+	mvn org.mortbay.jetty:maven-jetty-plugin:run
 
 Misc.
 -----
