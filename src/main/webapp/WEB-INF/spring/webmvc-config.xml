@@ -22,7 +22,6 @@
 	<mvc:resources mapping="/apple-touch-icon*" location="/" />
 
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-		<property name="favorPathExtension" value="false" />
 		<property name="viewResolvers">
 			<list>
 				<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">

@@ -17,23 +17,23 @@
 	</bean>
 	
 	<bean id="config" class="net.greghaines.jesque.Config">
-		<constructor-arg value="${redis.host}" />
-		<constructor-arg value="${redis.port}" />
-		<constructor-arg value="${redis.timeout}" />
-		<constructor-arg value="${redis.password}" />
-		<constructor-arg value="${redis.namespace}" />
-		<constructor-arg value="${redis.database}" />
+		<constructor-arg type="java.lang.String" value="${redis.host}" />
+		<constructor-arg type="int" value="${redis.port}" />
+		<constructor-arg type="int" value="${redis.timeout}" />
+		<constructor-arg type="java.lang.String" value="${redis.password}" />
+		<constructor-arg type="java.lang.String" value="${redis.namespace}" />
+		<constructor-arg type="int" value="${redis.database}" />
 	</bean>
 	
 	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
 		<constructor-arg>
 			<bean class="net.greghaines.jesque.utils.PoolUtils" factory-method="getDefaultPoolConfig" />
 		</constructor-arg>
-		<constructor-arg value="${redis.host}" />
-		<constructor-arg value="${redis.port}" />
-		<constructor-arg value="${redis.timeout}" />
-		<constructor-arg value="${redis.password}" />
-		<constructor-arg value="${redis.database}" />
+		<constructor-arg type="java.lang.String" value="${redis.host}" />
+		<constructor-arg type="int" value="${redis.port}" />
+		<constructor-arg type="int" value="${redis.timeout}" />
+		<constructor-arg type="java.lang.String" value="${redis.password}" />
+		<constructor-arg type="int" value="${redis.database}" />
 	</bean>
 	
 	<bean id="failureDAO" class="net.greghaines.jesque.meta.dao.impl.FailureDAORedisImpl">
