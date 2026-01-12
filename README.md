@@ -33,7 +33,7 @@ Boom! Ready to go!
 
 ## License
 
-Copyright 2011 Greg Haines
+Copyright 2026 Greg Haines
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
