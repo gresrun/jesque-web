@@ -309,14 +309,14 @@ public class JesqueController {
   @RequestMapping(value = "/workers/{workerName}", method = GET)
   public String workers(@PathVariable("workerName") final String workerName, final Model model) {
     final WorkerValues wv = addWorkersAttributes(workerName, model, false);
-    addHeaderAttributes(model, "Workers", wv.getSubTabs(), wv.getActiveSubTab());
-    return wv.getViewName();
+    addHeaderAttributes(model, "Workers", wv.subTabs(), wv.activeSubTab());
+    return wv.viewName();
   }
 
   @RequestMapping(value = "/workers/{workerName}.poll", method = GET)
   public String workersPoll(
       @PathVariable("workerName") final String workerName, final Model model) {
-    return addWorkersAttributes(workerName, model, true).getViewName();
+    return addWorkersAttributes(workerName, model, true).viewName();
   }
 
   @RequestMapping(value = "/working", method = GET)
@@ -432,28 +432,6 @@ public class JesqueController {
     return count;
   }
 
-  private static final class WorkerValues {
-    private final String activeSubTab;
-    private final String viewName;
-    private final List<String> subTabs;
-
-    public WorkerValues(
-        final String activeSubTab, final String viewName, final List<String> subTabs) {
-      this.activeSubTab = activeSubTab;
-      this.viewName = viewName;
-      this.subTabs = subTabs;
-    }
-
-    public String getActiveSubTab() {
-      return this.activeSubTab;
-    }
-
-    public String getViewName() {
-      return this.viewName;
-    }
-
-    public List<String> getSubTabs() {
-      return this.subTabs;
-    }
+  private static record WorkerValues(String activeSubTab, String viewName, List<String> subTabs) {
   }
 }
