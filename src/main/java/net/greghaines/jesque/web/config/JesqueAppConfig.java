@@ -31,7 +31,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.UnifiedJedis;
 
 /** Spring application configuration for Jesque Web. */
 @Configuration
@@ -52,38 +52,38 @@ public class JesqueAppConfig {
       @Value("${redis.password}") final String password,
       @Value("${redis.namespace}") final String namespace,
       @Value("${redis.database}") final int database) {
-    return new Config(host, port, timeout, password, namespace, database);
-  }
-
-  @Bean
-  public JedisPool jedisPool(
-      @Value("${redis.host}") final String host,
-      @Value("${redis.port}") final int port,
-      @Value("${redis.timeout}") final int timeout,
-      @Value("${redis.password}") final String password,
-      @Value("${redis.database}") final int database) {
     var actualPassword = (password == null || password.isBlank()) ? null : password;
-    return new JedisPool(
-        PoolUtils.getDefaultPoolConfig(), host, port, timeout, actualPassword, database);
+    return Config.newBuilder()
+        .withHostAndPort(host, port)
+        .withTimeout(timeout)
+        .withPassword(actualPassword)
+        .withNamespace(namespace)
+        .withDatabase(database)
+        .build();
   }
 
   @Bean
-  public FailureDAO failureDAO(final JedisPool jedisPool, final Config jesqueConfig) {
+  public UnifiedJedis jedisPool(Config jesqueConfig) {
+    return PoolUtils.createJedisPool(jesqueConfig);
+  }
+
+  @Bean
+  public FailureDAO failureDAO(final Config jesqueConfig, final UnifiedJedis jedisPool) {
     return new FailureDAORedisImpl(jesqueConfig, jedisPool);
   }
 
   @Bean
-  public KeysDAO keysDAO(final JedisPool jedisPool, final Config jesqueConfig) {
+  public KeysDAO keysDAO(final Config jesqueConfig, final UnifiedJedis jedisPool) {
     return new KeysDAORedisImpl(jesqueConfig, jedisPool);
   }
 
   @Bean
-  public QueueInfoDAO queueInfoDAO(final JedisPool jedisPool, final Config jesqueConfig) {
+  public QueueInfoDAO queueInfoDAO(final Config jesqueConfig, final UnifiedJedis jedisPool) {
     return new QueueInfoDAORedisImpl(jesqueConfig, jedisPool);
   }
 
   @Bean
-  public WorkerInfoDAO workerInfoDAO(final JedisPool jedisPool, final Config jesqueConfig) {
+  public WorkerInfoDAO workerInfoDAO(final Config jesqueConfig, final UnifiedJedis jedisPool) {
     return new WorkerInfoDAORedisImpl(jesqueConfig, jedisPool);
   }
 }

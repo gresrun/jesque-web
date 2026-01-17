@@ -23,7 +23,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import org.springframework.web.servlet.view.json.JacksonJsonView;
 
 /** WebMVC configuration for Jesque Web. */
 @Configuration
@@ -48,7 +48,7 @@ public class JesqueWebConfig implements WebMvcConfigurer {
   public void configureViewResolvers(ViewResolverRegistry registry) {
     registry.jsp("/WEB-INF/jsp/", ".jsp");
 
-    var jsonView = new MappingJackson2JsonView(ObjectMapperFactory.get());
+    var jsonView = new JacksonJsonView(ObjectMapperFactory.get());
     jsonView.setPrefixJson(false);
     jsonView.setModelKeys(
         Set.of(

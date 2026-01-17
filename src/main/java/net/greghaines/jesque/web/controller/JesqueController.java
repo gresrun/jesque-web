@@ -21,8 +21,7 @@ import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
+import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -66,16 +65,26 @@ public class JesqueController {
   private static final List<String> statsSubTabs = List.of("resque", "redis", "keys");
   private static final Pattern whitespacePattern = Pattern.compile("\\s+");
 
-  @Resource private Config config;
-  @Resource private FailureDAO failureDAO;
-  @Resource private KeysDAO keysDAO;
-  @Resource private QueueInfoDAO queueInfoDAO;
-  @Resource private WorkerInfoDAO workerInfoDAO;
-  private String redisURI;
+  private final Config config;
+  private final FailureDAO failureDAO;
+  private final KeysDAO keysDAO;
+  private final QueueInfoDAO queueInfoDAO;
+  private final WorkerInfoDAO workerInfoDAO;
+  private final String redisURI;
 
-  @PostConstruct
-  public void buildRedisURI() {
-    this.redisURI = this.config.getURI();
+  @Inject
+  public JesqueController(
+      final Config config,
+      final FailureDAO failureDAO,
+      final KeysDAO keysDAO,
+      final QueueInfoDAO queueInfoDAO,
+      final WorkerInfoDAO workerInfoDAO) {
+    this.config = config;
+    this.failureDAO = failureDAO;
+    this.keysDAO = keysDAO;
+    this.queueInfoDAO = queueInfoDAO;
+    this.workerInfoDAO = workerInfoDAO;
+    this.redisURI = config.getURI();
   }
 
   @ExceptionHandler
