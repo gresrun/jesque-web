@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -58,19 +57,24 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
+/** Controller for the Jesque Web application. */
 @Controller("jesqueController")
 public class JesqueController {
 
-  private static final List<String> tabs =
-      Arrays.asList("Overview", "Working", "Failed", "Queues", "Workers", "Stats");
-  private static final List<String> statsSubTabs = Arrays.asList("resque", "redis", "keys");
+  private static final List<String> tabs = List.of("Overview", "Working", "Failed", "Queues", "Workers", "Stats");
+  private static final List<String> statsSubTabs = List.of("resque", "redis", "keys");
   private static final Pattern whitespacePattern = Pattern.compile("\\s+");
 
-  @Resource private Config config;
-  @Resource private FailureDAO failureDAO;
-  @Resource private KeysDAO keysDAO;
-  @Resource private QueueInfoDAO queueInfoDAO;
-  @Resource private WorkerInfoDAO workerInfoDAO;
+  @Resource
+  private Config config;
+  @Resource
+  private FailureDAO failureDAO;
+  @Resource
+  private KeysDAO keysDAO;
+  @Resource
+  private QueueInfoDAO queueInfoDAO;
+  @Resource
+  private WorkerInfoDAO workerInfoDAO;
   private String redisURI;
 
   @PostConstruct
@@ -152,10 +156,7 @@ public class JesqueController {
     return "redirect:/failed";
   }
 
-  @RequestMapping(
-      value = "/failed/requeue/{index}",
-      method = GET,
-      headers = "X-Requested-With=XMLHttpRequest")
+  @RequestMapping(value = "/failed/requeue/{index}", method = GET, headers = "X-Requested-With=XMLHttpRequest")
   public void failedRequeueXHR(
       @PathVariable("index") final long index, final HttpServletResponse resp) throws IOException {
     final Date retriedAt = this.failureDAO.requeue(index);
@@ -283,8 +284,7 @@ public class JesqueController {
     addHeaderAttributes(model, "Stats", statsSubTabs, "keys");
     model.addAttribute("start", offset);
     model.addAttribute("count", count);
-    final KeyInfo keyInfo =
-        this.keysDAO.getKeyInfo(this.config.getNamespace() + COLON + key, offset, count);
+    final KeyInfo keyInfo = this.keysDAO.getKeyInfo(this.config.getNamespace() + COLON + key, offset, count);
     if (keyInfo == null) {
       model.addAttribute("keyName", key);
     } else {
@@ -373,8 +373,7 @@ public class JesqueController {
         model.addAttribute("workers", hostMap.get(workerName));
       }
     }
-    final List<String> subTabs =
-        (hostMap.size() > 1) ? new ArrayList<String>(hostMap.keySet()) : null;
+    final List<String> subTabs = (hostMap.size() > 1) ? new ArrayList<String>(hostMap.keySet()) : null;
     return new WorkerValues(activeSubTab, viewName, subTabs);
   }
 
