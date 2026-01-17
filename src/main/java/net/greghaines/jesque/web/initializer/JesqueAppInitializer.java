@@ -42,8 +42,8 @@ public class JesqueAppInitializer implements WebApplicationInitializer {
     servletContext.addListener(new ContextLoaderListener(webAppContext));
 
     // Register and map the Dispatcher Servlet
-    ServletRegistration.Dynamic dispatcher = servletContext.addServlet("jesque-web",
-        new DispatcherServlet(webAppContext));
+    ServletRegistration.Dynamic dispatcher =
+        servletContext.addServlet("jesque-web", new DispatcherServlet(webAppContext));
     dispatcher.setLoadOnStartup(1);
     dispatcher.addMapping("/app/*");
 
