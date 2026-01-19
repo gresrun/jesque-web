@@ -3,9 +3,9 @@
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fgresrun%2Fjesque-web%2Fbadge%3Fref%3Dmaster&style=flat&label=build&logo=none)](https://actions-badge.atrox.dev/gresrun/jesque-web/goto?ref=master)  [![License Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/gresrun/jesque-web/blob/master/LICENSE)
 
 
-Jesque-Web is a faithful re-implementation of the [Sinatra](http://www.sinatrarb.com/) web application, resque-web, that is a part of [Resque](https://github.com/resque/resque) in [Java](https://www.java.com/en/).
+Jesque-Web is a faithful re-implementation of the [Sinatra](https://www.sinatrarb.com/) web application, resque-web, that is a part of [Resque](https://github.com/resque/resque) in [Java](https://www.java.com/en/).
 
-Jesque-Web is a [Maven](https://maven.apache.org/) project built using [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html) and depends on [Jesque](https://github.com/gresrun/jesque), [Jedis](https://github.com/xetorthio/jedis) to connect to [Redis](https://redis.io/), [Jackson](https://github.com/FasterXML/jackson/) to map to/from [JSON](https://www.json.org/) and [SLF4J](https://www.slf4j.org/) for logging.
+Jesque-Web is a [Maven](https://maven.apache.org/) project built using [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html) and depends on [Jesque](https://github.com/gresrun/jesque), [Jedis](https://github.com/redis/jedis) to connect to [Redis](https://redis.io/), [Jackson](https://github.com/FasterXML/jackson/) to map to/from [JSON](https://www.json.org/) and [SLF4J](https://www.slf4j.org/) for logging.
 
 ***
 
